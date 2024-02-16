@@ -1,0 +1,19 @@
+{
+    "name": "marksync/orm-migration",
+    "description": "orm migration",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Marksync\\OrmMigration\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ваше Имя",
+            "email": "picus.2022@mail.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
