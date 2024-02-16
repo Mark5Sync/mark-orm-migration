@@ -1,0 +1,6 @@
+"curseId","Promocode","Sale"
+"int","string","int"
+"REFERENCES courses(id)",,
+"----","---","---"
+"6","CNC2024","90"
+"6","чпу-10","10"

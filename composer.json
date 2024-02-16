@@ -5,15 +5,27 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Marksync\\OrmMigration\\": "src/"
+            "markorm_migration\\": "src/"
         }
     },
     "authors": [
         {
             "name": "Ваше Имя",
-            "email": "picus.2022@mail.ru"
+            "email": "no_soap_0@mail.ru"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:Mark5Sync/mark-di.git"
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "marksync/di": "dev-main",
+        "markdi/markdi": "dev-main"
+    },
+    "scripts": {
+        "mark": "vendor/bin/mark"
+    }
 }
