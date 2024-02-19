@@ -4,7 +4,6 @@ namespace markorm_migration\migration_connect;
 
 class Connection
 {
-
     public $log = [];
 
     private \PDO $pdo;

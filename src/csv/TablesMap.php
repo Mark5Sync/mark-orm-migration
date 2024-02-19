@@ -30,6 +30,13 @@ class TablesMap
             else
                 $this->checkColls($table);
         }
+
+
+
+        foreach ($this->tables as $table) {
+            $table->content->compare();
+        }
+
     }
 
 

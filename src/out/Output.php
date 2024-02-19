@@ -19,7 +19,7 @@ class Output {
 
     function run(string $query){
         if ($this->outputFile)
-            file_put_contents($this->outputFile, "$query\n", FILE_APPEND);
+            file_put_contents($this->outputFile, "$query;\n", FILE_APPEND);
     }
 
 

@@ -38,7 +38,7 @@ class Table
 
         while (($data = fgetcsv($handle, 1000, ",")) !== false) {
             if (!$readHead) {
-                $this->body[] = $data;
+                $this->body[] = array_map(fn ($val) => $val == 'NULL' ? null : $val, $data);
                 continue;
             }
 
