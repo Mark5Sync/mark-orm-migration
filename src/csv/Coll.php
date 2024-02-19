@@ -3,11 +3,13 @@
 namespace markorm_migration\csv;
 
 use markorm_migration\_markers\csv;
-use markorm_migration\_markers\replace;
+use markorm_migration\_markers\migration_tools;
+use markorm_migration\_markers\out;
 
 class Coll
 {
-    use replace;
+    use out;
+    use migration_tools;
     use csv;
 
     public Table $table;
@@ -19,8 +21,8 @@ class Coll
     public ?string $default = null;
     public string $extra = '';
 
-    public ?string $relationTable;
-    public ?string $relationColl;
+    public ?string $relationTable = null;
+    public ?string $relationColl = null;
 
 
 
@@ -53,8 +55,12 @@ class Coll
             $this->key = 'PRI';
         }
 
-        if ($this->checkString($value, 'AUTO_INCREMENT'))
+        if ($this->checkString($value, 'AUTO_INCREMENT')) {
             $this->extra = 'auto_increment';
+            $this->isNull = false;
+            $this->key = 'PRI';
+        }
+
 
         $value = trim($value);
 
@@ -73,7 +79,7 @@ class Coll
             return;
 
         foreach ($matches as [$defSearch, $defaultValue]) {
-            $this->setDefault($defaultValue);
+            $this->setDefault($defaultValue == "NULL" ? null : $defaultValue);
 
             // Удаляю из $value
             $value = str_replace($defSearch, '', $value);
@@ -81,7 +87,8 @@ class Coll
     }
 
 
-    function setDefault(string $value){
+    function setDefault(?string $value)
+    {
         $this->default = $value;
     }
 
@@ -126,23 +133,43 @@ class Coll
         ?string $key = null,
         ?string $default = null,
         ?string $extra = null,
+        $relation = null,
     ) {
 
         if ($type != $this->type || $isNull != $this->isNull || $extra != $this->extra)
             $this->changeColl->changeType();
 
-        if ($key != $this->key)
-            $this->changeColl->changeKey();
+        if ($key == 'MUL') {
+            if ($relation['table'] != $this->relationTable || $relation['coll'] != $this->relationColl)
+                $this->changeColl->changeKey();
+        } else
+            if ($key != $this->key)
+                $this->changeColl->changeKey();
 
         if ($default != $this->default)
             $this->changeColl->changeDefault();
     }
 
 
+    function create()
+    {
+        $collData = $this->createQuery();
+        $query = "ALTER TABLE {$this->table->name} ADD $collData";
+
+        $this->output->run($query);
+    }
+
+
     function createQuery()
     {
-        $isNull = $this->isNull ? 'NULL' : 'NOT NULL';
-        return "{$this->field} {$this->type} $isNull {$this->extra}";
+        $isNull = $this->isNull ? 'DEFAULT NULL' : 'NOT NULL';
+
+        $primKey = $this->key == 'PRI' ? "PRIMARY KEY" : '';
+
+        $relation = $this->relationTable ? "REFERENCES {$this->relationTable}({$this->relationColl})" : '';
+
+        $result = "{$this->field} {$this->type} $isNull $primKey {$this->extra} $relation";
+        return $result;
     }
 
 

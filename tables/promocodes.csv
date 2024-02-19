@@ -1,4 +1,4 @@
-"curseId","Promocode","Sale"
+"curseId","promocode","sale"
 "int","string","int"
 "REFERENCES courses(id)",,
 "----","---","---"

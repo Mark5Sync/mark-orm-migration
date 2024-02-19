@@ -1,6 +1,6 @@
 <?php
 
-namespace markorm_migration\replace;
+namespace markorm_migration\migration_tools;
 
 
 class Types
@@ -21,5 +21,4 @@ class Types
 
         return false;
     }
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-use markorm_migration\_markers\connect;
+use markorm_migration\_markers\migration_connect;
 use markorm_migration\csv\TablesSync;
 
 require './vendor/autoload.php';
@@ -8,14 +8,14 @@ require './vendor/autoload.php';
 
 new class
 {
-    use connect;
+    use migration_connect;
 
     function __construct()
     {
         $this->setPDO();
 
         $sync = new TablesSync;
-        $sync->from('./tables')->start();
+        $sync->from('./tables')->start('./migrations');
     }
 
 

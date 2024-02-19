@@ -2,11 +2,17 @@
 
 namespace markorm_migration\csv;
 
-use markorm_migration\_markers\connect;
+use markorm_migration\_markers\migration_connect;
+use markorm_migration\_markers\migration_tools;
+use markorm_migration\_markers\out;
 
 class TablesMap
 {
-    use connect;
+    use out;
+    use migration_connect;
+    use migration_tools;
+
+
     private $tables = [];
 
 
@@ -21,8 +27,8 @@ class TablesMap
         foreach ($this->tables as $table) {
             if (!$this->tableExists($table))
                 $this->create($table);
-
-            $this->checkColls($table);
+            else
+                $this->checkColls($table);
         }
     }
 
@@ -47,9 +53,8 @@ class TablesMap
     {
         $strColls = $table->getCreateStringHeader();
 
-        $query = "CREATE TABLE `$table->name` ($strColls)";
-
-        $this->connection->query($query);
+        $query = "CREATE TABLE `$table->name` (\n\t$strColls\n)\n";
+        $this->output->run($query);
     }
 
 
@@ -69,6 +74,12 @@ class TablesMap
 
         $stmt = $this->connection->query($query);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+
+        foreach ($result as &$coll) {
+            if ($coll['Key'] == 'MUL')
+                $coll['relation'] = $this->relationShip->tables[$table->name][$coll['Field']];
+        }
 
         return $result;
     }

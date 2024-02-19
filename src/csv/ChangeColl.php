@@ -3,12 +3,13 @@
 namespace markorm_migration\csv;
 
 use markdi\Mark;
-use markorm_migration\_markers\connect;
+use markorm_migration\_markers\out;
 
 #[Mark(mode: Mark::LOCAL, args: ['parent'])]
 class ChangeColl
 {
-    use connect;
+    // use connect;
+    use out;
 
     function __construct(private Coll $coll)
     {
@@ -26,7 +27,7 @@ class ChangeColl
             MODIFY COLUMN $collStr 
         ";
 
-        $this->connection->query("/* CHANGE TYPE */\n$sql");
+        $this->output->run("/* CHANGE TYPE */\n$sql");
     }
 
 
@@ -41,7 +42,7 @@ class ChangeColl
             DROP PRIMARY KEY
         ";
 
-        $this->connection->query("/* -- Сначала удаляем текущий первичный ключ */\n$sql");
+        $this->output->run("/* -- Сначала удаляем текущий первичный ключ */\n$sql");
 
 
 
@@ -50,7 +51,7 @@ class ChangeColl
             ADD PRIMARY KEY `{$this->coll->field}`
         ";
 
-        $this->connection->query("/* -- Затем добавляем новый первичный ключ */\n$sql");
+        $this->output->run("/* -- Затем добавляем новый первичный ключ */\n$sql");
     }
 
 
@@ -60,7 +61,7 @@ class ChangeColl
         `{$this->coll->table->name}`
         ALTER COLUMN `{$this->coll->field}` SET DEFAULT :def";
 
-        $this->connection->query(
+        $this->output->run(
             "/* -- Затем добавляем новый первичный ключ */\n$sql",
             ['def' => $this->default],
         );

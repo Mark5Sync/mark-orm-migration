@@ -3,12 +3,12 @@
 namespace markorm_migration\csv;
 
 use markdi\NotMark;
-use markorm_migration\_markers\replace;
+use markorm_migration\_markers\migration_tools;
 
 #[NotMark]
 class Table
 {
-    use replace;
+    use migration_tools;
 
     public readonly string $name;
     private $head = [];
@@ -72,7 +72,7 @@ class Table
 
     function getCreateStringHeader(): string
     {
-        return implode(', ', $this->head);
+        return implode(",\n\t", $this->head);
     }
 
 
@@ -89,15 +89,16 @@ class Table
 
         foreach ($this->head as $field => $coll) {
             if (!isset($currentColls[$field]))
-                $coll->create();
+                return $coll->create();
 
             [
                 'Type' => $type,
                 'Null' => $null,
                 'Key' => $key,
                 'Default' => $default,
-                'Extra' => $extra
-            ] = $currentColls[$field];
+                'Extra' => $extra,
+                'relation' => $relation,
+            ] = [...['relation' => null], ...$currentColls[$field]];
 
 
             $coll->compare(
@@ -106,6 +107,7 @@ class Table
                 $key,
                 $default,
                 $extra,
+                $relation,
             );
         }
     }

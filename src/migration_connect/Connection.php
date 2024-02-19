@@ -1,6 +1,6 @@
 <?php
 
-namespace markorm_migration\connect;
+namespace markorm_migration\migration_connect;
 
 class Connection
 {
