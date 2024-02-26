@@ -14,12 +14,10 @@
             "email": "no_soap_0@mail.ru"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {
-        "marksync/di": "dev-main",
-        "markdi/markdi": "dev-main"
-    },
     "scripts": {
         "mark": "vendor/bin/mark"
+    },
+    "require": {
+        "markdi/markdi": "^3.2"
     }
 }

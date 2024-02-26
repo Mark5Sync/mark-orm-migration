@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e097ed36c2f4f142bc3981f502465607",
+    "content-hash": "8fc8f84fdc34495e8816b2608b666368",
     "packages": [
         {
             "name": "composer/class-map-generator",
-            "version": "dev-main",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/class-map-generator.git",
@@ -33,7 +33,6 @@
                 "symfony/filesystem": "^5.4 || ^6",
                 "symfony/phpunit-bridge": "^5"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -82,7 +81,7 @@
         },
         {
             "name": "composer/pcre",
-            "version": "dev-main",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
@@ -102,7 +101,6 @@
                 "phpstan/phpstan-strict-rules": "^1.1",
                 "symfony/phpunit-bridge": "^5"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,16 +152,16 @@
         },
         {
             "name": "markdi/markdi",
-            "version": "dev-main",
+            "version": "v3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Shveikin/markdi.git",
-                "reference": "259166810968e0ac666e953a522139df62b1825d"
+                "reference": "faad3d539503ada4805d908d4f170364d1dea974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Shveikin/markdi/zipball/259166810968e0ac666e953a522139df62b1825d",
-                "reference": "259166810968e0ac666e953a522139df62b1825d",
+                "url": "https://api.github.com/repos/Shveikin/markdi/zipball/faad3d539503ada4805d908d4f170364d1dea974",
+                "reference": "faad3d539503ada4805d908d4f170364d1dea974",
                 "shasum": ""
             },
             "require": {
@@ -172,7 +170,6 @@
             "require-dev": {
                 "phpunit/phpunit": "^10.4"
             },
-            "default-branch": true,
             "bin": [
                 "bin/mark"
             ],
@@ -196,81 +193,22 @@
             "description": "di plugin",
             "support": {
                 "issues": "https://github.com/Shveikin/markdi/issues",
-                "source": "https://github.com/Shveikin/markdi/tree/main"
+                "source": "https://github.com/Shveikin/markdi/tree/v3.2.1"
             },
-            "time": "2024-01-24T06:58:37+00:00"
-        },
-        {
-            "name": "marksync/di",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Mark5Sync/mark-di.git",
-                "reference": "05670433dbd421c7cd25ed6eb9ec2097060d7fd9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Mark5Sync/mark-di/zipball/05670433dbd421c7cd25ed6eb9ec2097060d7fd9",
-                "reference": "05670433dbd421c7cd25ed6eb9ec2097060d7fd9",
-                "shasum": ""
-            },
-            "require": {
-                "composer/class-map-generator": "^1.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^10.4"
-            },
-            "default-branch": true,
-            "bin": [
-                "bin/mark"
-            ],
-            "type": "meta",
-            "autoload": {
-                "psr-4": {
-                    "markdi\\": "src/"
-                }
-            },
-            "scripts": {
-                "post-install-cmd": [
-                    "chmod +x bin/mark",
-                    "markdi\\Commands::createMarkScript"
-                ],
-                "post-update-cmd": [
-                    "chmod +x bin/mark",
-                    "markdi\\Commands::createMarkScript"
-                ],
-                "mark": [
-                    "php vendor/bin/mark"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "II",
-                    "email": "no_soap_0@mail.ru"
-                }
-            ],
-            "description": "di",
-            "support": {
-                "source": "https://github.com/Mark5Sync/mark-di/tree/main",
-                "issues": "https://github.com/Mark5Sync/mark-di/issues"
-            },
-            "time": "2024-01-24T07:10:29+00:00"
+            "time": "2023-12-23T03:38:55+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "7.1.x-dev",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "beeac2ba50a5dd729d8a23507ad09cdd0f82110c"
+                "reference": "6e5688d69f7cfc4ed4a511e96007e06c2d34ce56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/beeac2ba50a5dd729d8a23507ad09cdd0f82110c",
-                "reference": "beeac2ba50a5dd729d8a23507ad09cdd0f82110c",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/6e5688d69f7cfc4ed4a511e96007e06c2d34ce56",
+                "reference": "6e5688d69f7cfc4ed4a511e96007e06c2d34ce56",
                 "shasum": ""
             },
             "require": {
@@ -305,7 +243,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/7.1"
+                "source": "https://github.com/symfony/finder/tree/v7.0.0"
             },
             "funding": [
                 {
@@ -321,15 +259,13 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-16T21:21:05+00:00"
+            "time": "2023-10-31T17:59:56+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "marksync/di": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
