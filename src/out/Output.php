@@ -9,8 +9,9 @@ class Output {
 
 
     function setOutputFile(?string $file = null){
-        if (!file_exists($file) || !is_dir($file))
-            throw new \Exception("Папка не существует или не является папкой ($file)", 1);
+        if (!file_exists($file))
+            mkdir($file, 0777, true);
+            // throw new \Exception("Папка не существует или не является папкой ($file)", 1);
             
         $date = date("Y-m-d H:i:s");
         $this->outputFile = "$file/{$date}.sql";
