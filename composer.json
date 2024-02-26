@@ -14,12 +14,6 @@
             "email": "no_soap_0@mail.ru"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:Mark5Sync/mark-di.git"
-        }
-    ],
     "minimum-stability": "dev",
     "require": {
         "marksync/di": "dev-main",
