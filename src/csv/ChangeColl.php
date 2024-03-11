@@ -18,7 +18,7 @@ class ChangeColl
 
     function changeType()
     {
-        echo "change type in coll {$this->coll->field} \n";
+        // echo "change type in coll {$this->coll->field} \n";
 
         $collStr = $this->coll->createQuery();
 
@@ -34,7 +34,7 @@ class ChangeColl
 
     function changeKey()
     {
-        echo "change primarykey in coll {$this->coll->field} \n";
+        // echo "change primarykey in coll {$this->coll->field} \n";
 
 
         $sql = "ALTER TABLE 
