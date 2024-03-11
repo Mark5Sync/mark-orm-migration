@@ -25,7 +25,37 @@ class SQLTable
         if (!file_exists($pathTo))
             mkdir($pathTo, 0777, true);
 
-        $this->writeFile("$pathTo/{$this->name}.csv", $this->transpose($this->colls));
+        $header = $this->transpose($this->colls);
+
+
+        $file = fopen("$pathTo/{$this->name}.csv", 'w');
+        $colls = $header['Field'];
+
+        $this->writeFile($file, [
+            ...$header,
+            array_fill(0, count($colls), '---'),
+        ]);
+
+
+
+        $data = [];
+
+        foreach ($this->for() as $index => $row) {
+
+            foreach ($colls as $coll) {
+                $data[$index][$coll] = is_null($row[$coll]) ? 'NULL' : $row[$coll];
+            }
+
+            if (count($data) > 10) {
+                $this->writeFile($file, $data);
+                $data = [];
+            }
+        }
+
+        if (!empty($data))
+            $this->writeFile($file, $data);
+
+        fclose($file);
     }
 
 
@@ -34,8 +64,8 @@ class SQLTable
         $result = [];
         foreach ($array as $props) {
             foreach ($props as $key => $value) {
-                // if (empty($result[$key]))
-                //     $result[$key][] = "@$key";
+                if (empty($result[$key]))
+                    $result[$key][] = "@$key";
 
                 if ($key == 'Type' && $newType = $this->types->typeCode($value))
                     $value = $newType;
@@ -44,6 +74,7 @@ class SQLTable
             }
         }
 
+
         return $result;
     }
 
@@ -51,12 +82,21 @@ class SQLTable
 
 
 
-    private function writeFile(string $fileName, array $data)
+    private function writeFile($fileStream, array $data, $append = false)
     {
-        $df = fopen($fileName, 'w');
+
         foreach ($data as $row) {
-            fputcsv($df, $row);
+            fputcsv($fileStream, $row);
         }
-        fclose($df);
+    }
+
+
+
+    private function for()
+    {
+        $smtp = $this->connection->query("SELECT * FROM {$this->name}");
+        foreach ($smtp->fetchAll(\PDO::FETCH_ASSOC) as $index => $row) {
+            yield $index => $row;
+        }
     }
 }
