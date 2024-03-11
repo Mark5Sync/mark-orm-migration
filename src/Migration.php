@@ -13,31 +13,31 @@ abstract class Migration implements MigrationInterface
     use migration_connect;
     use controllers;
 
+    public $tablesFolder = './tables';
+    public $migrationsFolder = './migrations';
+
     final function __construct()
     {
         $this->connection->setPDO($this->getConnection());
-        $tables = $this->getTablesFolder();
-        $migrations = $this->getMigrationsFolder();
+
+        [
+            'c' => $command,
+            't' => $tables,
+            'm' => $migratins,
+        ] = getopt("c:t:m:");
 
 
-        $command = getopt("c:t:o:");
-        $command = $command['c'] ?? false;
+        if ($tables) $this->tablesFolder = $tables;
+        if ($migratins) $this->migrationsFolder = $migratins;
+
+        if (!$command)
+            die('Нужно указать команду для выполнения php ./migration.php -c [command]');
 
 
+        if (method_exists($this, $command))
+            return $this->{$command}();
 
-        switch ($command) {
-            case 'dump':
-                $this->dump($tables);
-                break;
-
-            case 'diff':
-                $this->diff($tables, $migrations);
-                break;
-
-            default:
-                echo "undefined command: $command";
-                break;
-        }
+        echo "undefined command: $command";
     }
 
 
@@ -45,14 +45,14 @@ abstract class Migration implements MigrationInterface
     {
         $tables = $this->tableController->tables();
 
-        
+
         print_r($tables);
     }
 
 
-    private function diff($from, $to)
+    private function diff()
     {
         $sync = new TablesSync;
-        $sync->from($from)->start($to);
+        $sync->from($this->tablesFolder)->start($this->migrationsFolder);
     }
 }
