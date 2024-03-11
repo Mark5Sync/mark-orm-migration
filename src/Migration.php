@@ -41,12 +41,22 @@ abstract class Migration implements MigrationInterface
     }
 
 
+
+
+
+
+
+
     private function dump()
     {
-        $tables = $this->tableController->tables();
+        $tables = $this->tableController->loadTables();
+        $naw = date("Y-m-d H:i:s");
 
+        foreach ($tables as $table) {
+            $table->saveToCsv("{$this->tablesFolder}/dump {$naw}/");
+        }
 
-        print_r($tables);
+        
     }
 
 

@@ -4,18 +4,26 @@ namespace markorm_migration\controllers;
 
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\csv\Table;
+use markorm_migration\sql\SQLTable;
 
 class TableController
 {
     use migration_connect;
 
-
-
-    function tables()
+    /**
+     * @return SQLTable[]
+     */
+    function loadTables()
     {
         $query = "SHOW TABLES";
         $stmt = $this->connection->query($query);
-        $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $tableNames = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+
+        $result = [];
+
+        foreach ($tableNames as $tableName) {
+            $result[] = new SQLTable($tableName);
+        }
 
         return $result;
     }
@@ -52,20 +60,17 @@ class TableController
 
 
     /**
-     * Проверить столбцы, если столбцы отсутствуют - будут созданы новые
+     * Сравнить две таблицы
      */
-    function checkColls(Table $table)
+    function campare(SQLTable $sqlTable, Table $csvTable)
     {
-        $colls = $this->getCollsFromTable($table);
-        $table->compare($colls);
+        $colls = $this->getColls($sqlTable);
+        // $table->compare($colls);
     }
 
 
 
-
-
-
-    private function getCollsFromTable(Table $table)
+    function getColls(SQLTable $table)
     {
         $query = "DESC `$table->name`";
 
@@ -80,4 +85,7 @@ class TableController
 
         return $result;
     }
+
+
+
 }
