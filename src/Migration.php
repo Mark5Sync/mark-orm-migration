@@ -44,9 +44,6 @@ abstract class Migration implements MigrationInterface
 
 
 
-
-
-
     private function dump()
     {
         $tables = $this->tableController->loadTables();
@@ -55,14 +52,13 @@ abstract class Migration implements MigrationInterface
         foreach ($tables as $table) {
             $table->saveToCsv("{$this->tablesFolder}/dump {$naw}/");
         }
-
-        
     }
 
 
-    private function diff()
+    private function up()
     {
         $sync = new TablesSync;
         $sync->from($this->tablesFolder)->start($this->migrationsFolder);
     }
+
 }
