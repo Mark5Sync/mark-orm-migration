@@ -4,6 +4,7 @@ namespace markorm_migration\csv;
 
 use markdi\NotMark;
 use markorm_migration\_markers\migration_tools;
+use markorm_migration\both\Header;
 
 #[NotMark]
 class CsvTable
@@ -15,59 +16,56 @@ class CsvTable
     private $body = [];
 
     public $depends = [];
+    public Header $header;
 
-
+    private ?string $fileSaveAs = null;
+    private $handle;
 
     function __construct(private string $csvFile)
     {
         $info = pathinfo($csvFile);
         $this->name = $info['filename'];
-        $this->read();
+
+        $this->header = new Header();
+        $body = $this->header->initFromCsv($this);
+        $this->body = $body;
     }
 
 
-
-    private function read(): void
+    function __destruct()
     {
-        $handle = fopen($this->csvFile, "r");
-        if (!$handle)
-            throw new \Exception("Невозможно прочитать файл ($this->csvFile)", 1);
-
-        $readHead = true;
-        $titles = false;
-
-        while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-            if (!$readHead) {
-                $this->body[] = array_map(fn ($val) => $val == 'NULL' ? null : $val, $data);
-                continue;
-            }
-
-            if (!$titles) {
-                $titles = $data;
-                continue;
-            }
-
-            foreach ($data as $index => $value) {
-                if (str_starts_with($value, '---')) {
-                    $readHead = false;
-                    break;
-                }
-
-
-                if (!isset($this->head[$titles[$index]])) {
-                    $this->head[$titles[$index]] = new Coll($titles[$index], $value);
-                    continue;
-                }
-
-                $this->head[$titles[$index]]->auto($value);
-            }
-        }
-
-
-
-        fclose($handle);
+        if ($this->handle)
+            $this->close();
     }
 
+
+
+
+    function open($rule = 'r')
+    {
+        $this->handle = fopen($this->fileSaveAs ? $this->fileSaveAs : $this->csvFile, $rule);
+
+        if (!$this->handle)
+            throw new \Exception("Невозможно прочитать файл ($this->csvFile)", 1);
+    }
+
+
+    function close()
+    {
+        fclose($this->handle);
+        $this->fileSaveAs = false;
+    }
+
+
+    function read()
+    {
+        return fgetcsv($this->handle, 1000, ",");
+    }
+
+    function write(array $data)
+    {
+        fputcsv($this->handle, $data);
+    }
 
 
     function getCreateStringHeader(): string
@@ -76,46 +74,36 @@ class CsvTable
     }
 
 
-
-    // function compare(array $colls)
-    // {
-    //     $currentColls = [];
-    //     $notExistsColls = [];
-
-    //     foreach ($colls as $coll) {
-    //         $currentColls[$coll['Field']] = $coll;
-    //     }
-
-
-    //     foreach ($this->head as $field => $coll) {
-    //         if (!isset($currentColls[$field]))
-    //             return $coll->create();
-
-    //         [
-    //             'Type' => $type,
-    //             'Null' => $null,
-    //             'Key' => $key,
-    //             'Default' => $default,
-    //             'Extra' => $extra,
-    //             'relation' => $relation,
-    //         ] = [...['relation' => null], ...$currentColls[$field]];
-
-
-    //         $coll->compare(
-    //             $type,
-    //             $null == 'YES',
-    //             $key,
-    //             $default,
-    //             $extra,
-    //             $relation,
-    //         );
-    //     }
-    // }
-
-
-
-    function addDepends(string $table)
+    function saveAs(string $saveAs)
     {
-        $this->depends[] = $table;
+        $this->fileSaveAs = "$saveAs/{$this->name}.csv";
+        $this->open('w');
+    }
+
+
+    function whiteHeader()
+    {
+        $headersRows = $this->header->getTranspose();
+
+        foreach ($headersRows as $row) {
+            $this->write($row);
+        }
+
+        $hr = array_fill(0, count($headersRows['field']), '---');
+        $this->write($hr);
+
+
+        return array_slice($headersRows['field'], 1);
+    }
+
+
+    function writeBody()
+    {
+        if (!$this->handle)
+            throw new \Exception("Файл закрыт для записи ($this->name)", 1);
+
+        foreach ($this->body as $row) {
+            $this->write([null, ...$row]);
+        }
     }
 }

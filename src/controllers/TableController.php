@@ -14,6 +14,7 @@ class TableController
 
 
 
+
     /**
      * @return CsvTable[]
      */
@@ -25,8 +26,8 @@ class TableController
 
         foreach ($tableNames as $tableName) {
             ['filename' => $filename] = pathinfo("$referenceFolder/$tableName");
-
-            $result[$filename] = new CsvTable("$referenceFolder/$tableName");
+            $csvTable = new CsvTable("$referenceFolder/$tableName");
+            $result[$filename] = $csvTable;
         }
 
         return $result;
@@ -58,18 +59,30 @@ class TableController
     /**
      * Сравнить 2 таблицы
      */
-    function compareAndSave(?CsvTable $csvTable = null, ?SQLTable $sqlTable = null, string $saveToPath)
+    function compareAndSave(string $saveToPath, ?CsvTable $csvTable = null, ?SQLTable $sqlTable = null)
     {
         if (is_null($csvTable))
             throw new \Exception("csv таблица отсутствует", 1);
 
+        $csvTable->saveAs($saveToPath);
+        $colls = $csvTable->whiteHeader();
 
-        if (is_null($sqlTable))
+
+
+        if (is_null($sqlTable)) {
+            $csvTable->writeBody();
+            $csvTable->close();
             throw new \Exception("sql таблица отсутствует", 1);
+        }
 
 
 
+        foreach ($sqlTable->for() as $index => $row) {
 
+        }
+
+
+        $csvTable->close();
 
         return false;
     }

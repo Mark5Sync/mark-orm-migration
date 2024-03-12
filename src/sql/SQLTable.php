@@ -62,40 +62,17 @@ class SQLTable
     }
 
 
-    private function transpose(array $array)
-    {
-        $result = [];
-        foreach ($array as $props) {
-            foreach ($props as $key => $value) {
-                if (empty($result[$key]))
-                    $result[$key][] = "@$key";
-
-                if ($key == 'Type' && $newType = $this->types->typeCode($value))
-                    $value = $newType;
-
-                $result[$key][] = $value;
-            }
-        }
-
-
-        return $result;
-    }
 
 
 
 
 
-    private function writeFile($fileStream, array $data, $append = false)
-    {
-
-        foreach ($data as $row) {
-            fputcsv($fileStream, $row);
-        }
-    }
 
 
 
-    private function for()
+
+
+    public function for()
     {
         $smtp = $this->connection->query("SELECT * FROM {$this->name}");
         foreach ($smtp->fetchAll(\PDO::FETCH_ASSOC) as $index => $row) {

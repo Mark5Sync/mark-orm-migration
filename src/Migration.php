@@ -31,7 +31,13 @@ abstract class Migration implements MigrationInterface
             'r' => $reference,
             'b' => $backups,
             'n' => $backupName,
-        ] = getopt("c:t:m:");
+        ] = [
+            'c' => false, 
+            'r' => false, 
+            'b' => false,
+            'n' => false,
+            ...getopt("c:t:m:")
+        ];
 
 
         if ($reference)  $this->referenceData = $reference;
@@ -90,7 +96,7 @@ abstract class Migration implements MigrationInterface
 
         foreach (array_keys($csvTables) as $tableName) {
             try {
-                $this->tableController->compareAndSave($csvTables[$tableName], $sqlTables[$tableName], $backupPath);
+                $this->tableController->compareAndSave($backupPath, $csvTables[$tableName], $sqlTables[$tableName]);
             } catch (\Throwable $th) {
                 echo " - $tableName: {$th->getMessage()}\n";
             }

@@ -67,6 +67,36 @@ class Coll
     }
 
 
+    function set(string $type, string $value)
+    {
+        switch ($type) {
+            case '@Null':
+                $this->isNull = $value == 'YES';
+                break;
+
+            case '@Key':
+                $this->key = $value;
+                break;
+
+            case '@Default':
+                $this->default = $value == 'NULL' ? null : $value;
+                break;
+
+            case '@Extra':
+                $this->extra = $value;
+                break;
+
+            case '@relation':
+                $this->relationTable = $value;
+                break;
+
+            default:
+                throw new \Exception("Неизвестный тип [$type]", 447);
+                break;
+        }
+    }
+
+
     private function checkDefault(string &$value)
     {
         $re = '/default (\w+)/mi';
@@ -142,7 +172,7 @@ class Coll
                 $this->changeColl->changeKey();
         } else
             if ($key != $this->key)
-                $this->changeColl->changeKey();
+            $this->changeColl->changeKey();
 
         if ($default != $this->default)
             $this->changeColl->changeDefault();
