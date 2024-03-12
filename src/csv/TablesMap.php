@@ -18,12 +18,6 @@ class TablesMap
     private $tables = [];
 
 
-    function __construct()
-    {
-        // $this->connection->query();
-    }
-
-
 
     function add(Table $table)
     {
