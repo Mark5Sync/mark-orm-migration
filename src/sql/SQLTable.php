@@ -5,6 +5,7 @@ namespace markorm_migration\sql;
 use markorm_migration\_markers\controllers;
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
+use markorm_migration\both\Header;
 
 class SQLTable
 {
@@ -12,11 +13,13 @@ class SQLTable
     use controllers;
     use migration_tools;
 
-    private $colls;
+    public $colls;
+    public Header $header;
 
     function __construct(public string $name)
     {
         $this->colls = $this->tableController->getColls($this);
+        $this->header = (new Header())->initFromSql($this);
     }
 
 

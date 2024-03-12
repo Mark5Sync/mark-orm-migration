@@ -3,12 +3,36 @@
 namespace markorm_migration\controllers;
 
 use markorm_migration\_markers\migration_connect;
-use markorm_migration\csv\Table;
+use markorm_migration\_markers\migration_tools;
+use markorm_migration\csv\CsvTable;
 use markorm_migration\sql\SQLTable;
 
 class TableController
 {
     use migration_connect;
+    use migration_tools;
+
+
+
+    /**
+     * @return CsvTable[]
+     */
+    function referenceTables(string $referenceFolder)
+    {
+        $tableNames = array_diff(scandir($referenceFolder), ['.', '..']);
+
+        $result = [];
+
+        foreach ($tableNames as $tableName) {
+            ['filename' => $filename] = pathinfo("$referenceFolder/$tableName");
+
+            $result[$filename] = new CsvTable("$referenceFolder/$tableName");
+        }
+
+        return $result;
+    }
+
+
 
     /**
      * @return SQLTable[]
@@ -22,7 +46,7 @@ class TableController
         $result = [];
 
         foreach ($tableNames as $tableName) {
-            $result[] = new SQLTable($tableName);
+            $result[$tableName] = new SQLTable($tableName);
         }
 
         return $result;
@@ -30,10 +54,32 @@ class TableController
 
 
 
+
+    /**
+     * Сравнить 2 таблицы
+     */
+    function compareAndSave(?CsvTable $csvTable = null, ?SQLTable $sqlTable = null, string $saveToPath)
+    {
+        if (is_null($csvTable))
+            throw new \Exception("csv таблица отсутствует", 1);
+
+
+        if (is_null($sqlTable))
+            throw new \Exception("sql таблица отсутствует", 1);
+
+
+
+
+
+        return false;
+    }
+
+
+
     /** 
      * Проверить существование таблицы
      */
-    function exists(Table $table)
+    function exists(SqlTable $table)
     {
         $query = "SHOW TABLES LIKE '$table->name'";
         $stmt = $this->connection->query($query);
@@ -49,7 +95,7 @@ class TableController
     /**
      * Создать таблицу
      */
-    function create(Table $table)
+    function create(CsvTable $table)
     {
         $strColls = $table->getCreateStringHeader();
 
@@ -57,16 +103,6 @@ class TableController
         $this->output->run($query);
     }
 
-
-
-    /**
-     * Сравнить две таблицы
-     */
-    function campare(SQLTable $sqlTable, Table $csvTable)
-    {
-        $colls = $this->getColls($sqlTable);
-        // $table->compare($colls);
-    }
 
 
 
@@ -88,4 +124,9 @@ class TableController
 
 
 
+
+    function removeAllTables()
+    {
+        echo "REMOVE ALL TABLES";
+    }
 }

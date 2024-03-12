@@ -1,6 +1,6 @@
 <?php
 
-namespace markorm_migration\csv;
+namespace markorm_migration\both;
 
 use markorm_migration\_markers\csv;
 use markorm_migration\_markers\migration_tools;
@@ -12,7 +12,6 @@ class Coll
     use migration_tools;
     use csv;
 
-    public Table $table;
 
     public string $field;
     public ?string $type = null;
@@ -26,10 +25,9 @@ class Coll
 
 
 
-    function __construct(string $field, string $type, Table $table)
+    function __construct(string $field, string $type)
     {
         $this->field = $field;
-        $this->table = $table;
 
         $this->auto($type);
     }

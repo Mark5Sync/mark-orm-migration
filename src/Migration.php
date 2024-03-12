@@ -16,8 +16,9 @@ abstract class Migration implements MigrationInterface
 
     public  $referenceData = './referenceData';
     public  $backupData    = './backupData';
-    private $backupName    = false;
+    public  $logs          = './logs';
 
+    private $backupName    = false;
 
 
 
@@ -39,14 +40,15 @@ abstract class Migration implements MigrationInterface
 
 
         if (!$command)
-            die('Нужно указать команду для выполнения php ./migration.php -c [command]');
+            die("Нужно указать команду для выполнения php ./migration.php -c [command]\n");
 
 
         if (method_exists($this, $command))
             return $this->{$command}();
 
-        echo "undefined command: $command";
+        die("undefined command: $command\n");
     }
+
 
 
     private function dump()
@@ -71,12 +73,51 @@ abstract class Migration implements MigrationInterface
     }
 
 
+
     private function backup()
     {
+        if (!file_exists($this->referenceData))
+            exit("Папка отсутствует $this->referenceData\n");
+
+        $csvTables = $this->tableController->referenceTables($this->referenceData);
+        $sqlTables = $this->tableController->loadTables();
+
+        $backupName = 'backup ' . date("Y-m-d H:i:s");
+        $backupPath = "$this->backupData/$backupName";
+
+        if (!file_exists($backupPath))
+            mkdir($backupPath, 0777, true);
+
+        foreach (array_keys($csvTables) as $tableName) {
+            try {
+                $this->tableController->compareAndSave($csvTables[$tableName], $sqlTables[$tableName], $backupPath);
+            } catch (\Throwable $th) {
+                echo " - $tableName: {$th->getMessage()}\n";
+            }
+        }
     }
+
 
 
     private function up()
     {
+        if (!$this->backupName)
+            die("Нужно указать backupName php migration -c up -n ... \n");
+
+        $path = "$this->backupData/$this->backupName";
+
+        if (!file_exists($path))
+            die("$this->backupName - ненайден\n");
+
+        $csvTables = $this->tableController->referenceTables($path);
+        if (empty($csvTables))
+            exit("Таблицы отсутствуют $path\n");
+
+        $this->tableController->removeAllTables();
+
+
+        foreach ($csvTables as $table) {
+            $this->tableController->create($table);
+        }
     }
 }

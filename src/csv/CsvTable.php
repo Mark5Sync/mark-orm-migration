@@ -6,7 +6,7 @@ use markdi\NotMark;
 use markorm_migration\_markers\migration_tools;
 
 #[NotMark]
-class Table
+class CsvTable
 {
     use migration_tools;
 
@@ -55,7 +55,7 @@ class Table
 
 
                 if (!isset($this->head[$titles[$index]])) {
-                    $this->head[$titles[$index]] = new Coll($titles[$index], $value, $this);
+                    $this->head[$titles[$index]] = new Coll($titles[$index], $value);
                     continue;
                 }
 
@@ -77,40 +77,40 @@ class Table
 
 
 
-    function compare(array $colls)
-    {
-        $currentColls = [];
-        $notExistsColls = [];
+    // function compare(array $colls)
+    // {
+    //     $currentColls = [];
+    //     $notExistsColls = [];
 
-        foreach ($colls as $coll) {
-            $currentColls[$coll['Field']] = $coll;
-        }
-
-
-        foreach ($this->head as $field => $coll) {
-            if (!isset($currentColls[$field]))
-                return $coll->create();
-
-            [
-                'Type' => $type,
-                'Null' => $null,
-                'Key' => $key,
-                'Default' => $default,
-                'Extra' => $extra,
-                'relation' => $relation,
-            ] = [...['relation' => null], ...$currentColls[$field]];
+    //     foreach ($colls as $coll) {
+    //         $currentColls[$coll['Field']] = $coll;
+    //     }
 
 
-            $coll->compare(
-                $type,
-                $null == 'YES',
-                $key,
-                $default,
-                $extra,
-                $relation,
-            );
-        }
-    }
+    //     foreach ($this->head as $field => $coll) {
+    //         if (!isset($currentColls[$field]))
+    //             return $coll->create();
+
+    //         [
+    //             'Type' => $type,
+    //             'Null' => $null,
+    //             'Key' => $key,
+    //             'Default' => $default,
+    //             'Extra' => $extra,
+    //             'relation' => $relation,
+    //         ] = [...['relation' => null], ...$currentColls[$field]];
+
+
+    //         $coll->compare(
+    //             $type,
+    //             $null == 'YES',
+    //             $key,
+    //             $default,
+    //             $extra,
+    //             $relation,
+    //         );
+    //     }
+    // }
 
 
 
