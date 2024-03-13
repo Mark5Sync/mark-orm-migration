@@ -5,7 +5,6 @@ namespace markorm_migration\both;
 
 use markdi\NotMark;
 use markorm_migration\_markers\controllers;
-use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 use markorm_migration\csv\CsvTable;
 use markorm_migration\sql\SQLTable;
@@ -17,6 +16,7 @@ class Header
     use controllers;
 
 
+    public $headerFields = [];
 
     /** 
      * @var Coll[]
@@ -39,7 +39,6 @@ class Header
          * @var Coll[]
          */
         $head = [];
-        $headerFields = [];
 
         $firstCollIsType = false;
         $collType = false;
@@ -52,7 +51,7 @@ class Header
                 $row = [];
 
                 foreach ($data as $index => $val) {
-                    $field = $headerFields[$index];
+                    $field = $this->headerFields[$index];
                     $row[$field] = $val == 'NULL' ? null : $val;
                 }
 
@@ -72,7 +71,7 @@ class Header
 
             foreach ($data as $index => $value) {
                 if (str_starts_with($value, '---')) {
-                    $headerFields = array_keys($head);
+                    $this->headerFields = array_keys($head);
                     $readHead = false;
                     break;
                 }

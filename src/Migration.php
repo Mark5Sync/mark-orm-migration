@@ -124,7 +124,7 @@ abstract class Migration implements MigrationInterface
 
 
         foreach ($csvTables as $table) {
-            $this->tableController->create($table);
+            $this->tableController->upload($table);
         }
     }
 }

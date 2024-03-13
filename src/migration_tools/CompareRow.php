@@ -7,19 +7,34 @@ namespace markorm_migration\migration_tools;
 class CompareRow
 {
 
-    function merge(array $sqlRow, array $csvRow)
+    function merge(array $fields, ?array $csvRow, array $sqlRow)
     {
         $result = [];
 
-        foreach ($csvRow as $key => $csvRowItem) {
-            $sqlRowItem = $sqlRow[$key];
-            if ($csvRowItem != $sqlRowItem)
-                throw new \Exception("Не знаю как обработать различие в значениях (csv:$csvRowItem != sql:$sqlRowItem)", 55);
-                
-
-            $result[$key] = $csvRowItem;
+        foreach ($fields as $filed) {
+            $result[$filed] = $this->compare($filed, $sqlRow[$filed] ?? null, is_null($csvRow) ? false : $csvRow[$filed] ?? null);
         }
 
         return $result;
+    }
+
+
+    private function compare(string $filed, ?string $sqlItem, false | string | null $csvItem)
+    {
+        if ($csvItem === false)
+            return $sqlItem;
+
+        if ($sqlItem != $csvItem) {
+
+            if (is_null($sqlItem)) 
+                return $csvItem;
+
+
+            return $csvItem;
+            // throw new \Exception("Не знаю как обработать различие в значениях $filed (csv:$csvItem != sql:$sqlItem)", 51);
+        }
+
+
+        return $csvItem;
     }
 }

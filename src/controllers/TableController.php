@@ -56,7 +56,6 @@ class TableController
 
 
 
-
     /**
      * Сравнить 2 таблицы
      */
@@ -69,14 +68,17 @@ class TableController
             if (!$sqlTable)
                 throw new \Exception("csv таблица отсутствует", 1);
 
-            foreach ($sqlTable->for() as $index => $row) {
-                if (isset($row['id']) && $csvRow = $csvTable->findId($row['id'])) {
-                    $merged = $this->compareRow->merge($row, $csvRow);
-                    yield $merged;
-                    continue;
-                }
+            foreach ($sqlTable->for() as $index => $sqlRow) {
+                $csvRow = null;
 
-                yield $row;
+                if (isset($sqlRow['id']))
+                    $csvRow = $csvTable->findId($sqlRow['id']);
+                else
+                    echo "--\n";
+
+                $merged = $this->compareRow->merge($csvTable->header->headerFields, $csvRow, $sqlRow);
+
+                yield $merged;
             }
         });
     }
@@ -97,21 +99,18 @@ class TableController
 
 
 
-
-
     /**
      * Создать таблицу
      */
-    function create(CsvTable $table)
+    function create(SQLTable $table)
     {
-        $strColls = $table->getCreateStringHeader();
+        $strColls = implode(",\n\t", $table->header->getCollsSqlFormat());
 
         $query = "CREATE TABLE `$table->name` (\n\t$strColls\n)\n";
 
-        $this->log->write("create table $table->name", $query);
+        $this->log->write("$table->name create table", $query);
         $this->output->run($query);
     }
-
 
 
 
@@ -133,15 +132,31 @@ class TableController
 
 
 
+    function upload(CsvTable $table)
+    {
+        $sqlTable = new SQLTable($table->name, $table->header);
+        $this->create($sqlTable);
+
+        $sqlTable->insertRows($table->header->headerFields, $table->body);
+
+        $this->log->write("$table->name - insert data");
+    }
+
+
+
     /** 
      * Удалить все таблицы
      */
     function removeAllTables()
     {
         $tables = array_keys($this->loadTables());
-        $query = "DROP table " . implode(', ', $tables);
-        $this->log->write("Удаляю все таблицы", $query);
+        if (empty($tables))
+            return;
 
+        $query = "DROP table " . implode(', ', $tables);
+        $this->log->write("# Удаляю все таблицы", $query);
+        $this->connection->query('SET FOREIGN_KEY_CHECKS = 0;');
         $this->connection->query($query);
+        $this->connection->query('SET FOREIGN_KEY_CHECKS = 1;');
     }
 }

@@ -19,10 +19,11 @@ class SQLTable
 
     function __construct(public string $name, ?Header $header = null)
     {
-        $this->colls = $this->tableController->getColls($this);
-
         if ($header)
             return $this->header = $header;
+
+
+        $this->colls = $this->tableController->getColls($this);
 
         $this->header = new Header();
         $this->header->initFromSql($this);
@@ -36,8 +37,8 @@ class SQLTable
 
         $table = new CsvTable($fileName, $this->header);
 
-        $table->save(function(){
-            foreach($this->for() as $row){
+        $table->save(function () {
+            foreach ($this->for() as $row) {
                 yield $row;
             }
         });
@@ -45,11 +46,34 @@ class SQLTable
 
 
 
-    public function for()
+    function for()
     {
         $smtp = $this->connection->query("SELECT * FROM {$this->name}");
         foreach ($smtp->fetchAll(\PDO::FETCH_ASSOC) as $index => $row) {
             yield $index => $row;
         }
+    }
+
+
+
+    function insertRows(array $colls, array $data)
+    {
+        $executeDate = [];
+        $rows =  [];
+
+        foreach ($data as $index => $dataRow) {
+            $row = [];
+            foreach ($dataRow as $key => $value) {
+                $dataKey = ":{$key}_{$index}";
+                $row[] = $dataKey;
+                $executeDate[$dataKey] = $value;
+            }
+            $rows[] = '(' . implode(',', $row) . ')';
+        }
+
+        $collsStr = implode(',', $colls);
+
+        $query = "INSERT INTO `$this->name`($collsStr) VALUES \n " . implode(", \n", $rows);
+        $this->connection->query($query, $executeDate);
     }
 }

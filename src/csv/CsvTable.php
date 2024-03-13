@@ -12,7 +12,7 @@ class CsvTable
     use migration_tools;
 
     public readonly string $name;
-    private $body = [];
+    public $body = [];
 
     public $depends = [];
     public Header $header;
@@ -24,7 +24,6 @@ class CsvTable
     {
         $info = pathinfo($csvFile);
         $this->name = $info['filename'];
-
 
         if ($header)
             return $this->header = $header;
@@ -49,8 +48,10 @@ class CsvTable
                 return $row;
         }
 
-        return false;
+        return null;
     }
+
+
 
 
     function open($rule = 'r')
@@ -84,12 +85,6 @@ class CsvTable
     {
         return array_map(fn ($itm) => is_null($itm) ? 'NULL' : $itm, $row);
     }
-
-    function getCreateStringHeader(): string
-    {
-        return implode(",\n\t", $this->header->getCollsSqlFormat());
-    }
-
 
 
 
