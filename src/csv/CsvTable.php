@@ -12,7 +12,6 @@ class CsvTable
     use migration_tools;
 
     public readonly string $name;
-    private $head = [];
     private $body = [];
 
     public $depends = [];
@@ -53,6 +52,7 @@ class CsvTable
     function close()
     {
         fclose($this->handle);
+        $this->handle = false;
         $this->fileSaveAs = false;
     }
 
@@ -68,10 +68,14 @@ class CsvTable
     }
 
 
+
+
     function getCreateStringHeader(): string
     {
-        return implode(",\n\t", $this->head);
+        return implode(",\n\t", $this->header->getCollsSqlFormat());
     }
+
+
 
 
     function saveAs(string $saveAs)

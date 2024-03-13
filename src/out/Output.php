@@ -2,7 +2,10 @@
 
 namespace markorm_migration\out;
 
+use markorm_migration\_markers\migration_connect;
+
 class Output {
+    use migration_connect;
 
     private $outputs = [];
     private ?string $outputFile = null; 
@@ -21,6 +24,8 @@ class Output {
     function run(string $query){
         if ($this->outputFile)
             file_put_contents($this->outputFile, "$query;\n", FILE_APPEND);
+
+        $this->connection->query($query);
     }
 
 

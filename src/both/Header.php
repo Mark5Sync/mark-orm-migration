@@ -4,14 +4,16 @@
 namespace markorm_migration\both;
 
 use markdi\NotMark;
+use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 use markorm_migration\csv\CsvTable;
-
+use markorm_migration\sql\SQLTable;
 
 #[NotMark]
 class Header
 {
     use migration_tools;
+    use migration_connect;
 
 
 
@@ -50,7 +52,7 @@ class Header
             }
 
             if (!$titles) {
-                if ($data[0] == '@Field') {
+                if (strtolower($data[0]) == '@field') {
                     $data = array_splice($data, 1);
                     $firstCollIsType = true;
                 }
@@ -74,12 +76,12 @@ class Header
 
 
                 $currentColl = $head[$coll];
-
+                $valueLowerCase = strtolower($value);
 
                 if ($collType) {
-                    $currentColl->set($collType, $value);
+                    $currentColl->set($collType, $valueLowerCase);
                 } else {
-                    $currentColl->auto($value);
+                    $currentColl->auto($valueLowerCase);
                 }
             }
         }
@@ -93,7 +95,10 @@ class Header
 
 
 
-
+    function initFromSql(SQLTable $table)
+    {
+        $this->connection->query();
+    }
 
 
 
@@ -115,6 +120,21 @@ class Header
             }
         }
 
+
+        return $result;
+    }
+
+
+
+
+
+    function getCollsSqlFormat()
+    {
+        $result = [];
+
+        foreach ($this->colls as $coll) {
+            $result[] = $coll->toSql();
+        }
 
         return $result;
     }

@@ -24,19 +24,17 @@ abstract class Migration implements MigrationInterface
 
     final function __construct()
     {
-        $this->connection->setPDO($this->getConnection());
-
         [
             'c' => $command,
             'r' => $reference,
             'b' => $backups,
             'n' => $backupName,
         ] = [
-            'c' => false, 
-            'r' => false, 
+            'c' => false,
+            'r' => false,
             'b' => false,
             'n' => false,
-            ...getopt("c:t:m:")
+            ...getopt("c:t:n:")
         ];
 
 
@@ -48,6 +46,7 @@ abstract class Migration implements MigrationInterface
         if (!$command)
             die("Нужно указать команду для выполнения php ./migration.php -c [command]\n");
 
+        $this->connection->setPDO($this->getConnection());
 
         if (method_exists($this, $command))
             return $this->{$command}();
@@ -88,7 +87,7 @@ abstract class Migration implements MigrationInterface
         $csvTables = $this->tableController->referenceTables($this->referenceData);
         $sqlTables = $this->tableController->loadTables();
 
-        $backupName = 'backup ' . date("Y-m-d H:i:s");
+        $backupName = 'backup_' . date("Y-m-d_H:i:s");
         $backupPath = "$this->backupData/$backupName";
 
         if (!file_exists($backupPath))
@@ -102,6 +101,8 @@ abstract class Migration implements MigrationInterface
             }
         }
     }
+
+
 
 
 

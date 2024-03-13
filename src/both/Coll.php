@@ -13,6 +13,7 @@ class Coll
     use csv;
 
 
+
     public string $field;
     public ?string $type = null;
     public bool $isNull = true;
@@ -69,25 +70,31 @@ class Coll
 
     function set(string $type, string $value)
     {
-        switch ($type) {
-            case '@Null':
-                $this->isNull = $value == 'YES';
+        switch (strtolower($type)) {
+            case '@null':
+            case '@isnull':
+                $this->isNull = in_array($value, ['yes', '1']);
                 break;
 
-            case '@Key':
+            case '@key':
                 $this->key = $value;
                 break;
 
-            case '@Default':
-                $this->default = $value == 'NULL' ? null : $value;
+            case '@default':
+                $this->default = $value == 'null' ? null : $value;
                 break;
 
-            case '@Extra':
+            case '@extra':
                 $this->extra = $value;
                 break;
 
             case '@relation':
+            case '@relationtable':
                 $this->relationTable = $value;
+                break;
+
+            case '@relationcoll':
+                $this->relationColl = $value;
                 break;
 
             default:
@@ -179,20 +186,33 @@ class Coll
     }
 
 
-    function create()
-    {
-        $collData = $this->createQuery();
-        $query = "ALTER TABLE {$this->table->name} ADD $collData";
 
-        $this->output->run($query);
+    private function getSqlKey()
+    {
+        switch ($this->key) {
+            case '':
+                return '';
+
+            case 'pri':
+                return 'PRIMARY KEY';
+
+            case 'uni':
+                return 'UNIQUE';
+
+            case 'mul':
+                return '';
+
+            default:
+                throw new \Exception("Не знаю про такой KEY ($this->key)", 33);
+        }
     }
 
 
-    function createQuery()
+    function toSql()
     {
         $isNull = $this->isNull ? 'DEFAULT NULL' : 'NOT NULL';
 
-        $primKey = $this->key == 'PRI' ? "PRIMARY KEY" : '';
+        $primKey = $this->getSqlKey();
 
         $relation = $this->relationTable ? "REFERENCES {$this->relationTable}({$this->relationColl})" : '';
 
@@ -203,6 +223,6 @@ class Coll
 
     function __toString()
     {
-        return $this->createQuery();
+        return $this->toSql();
     }
 }

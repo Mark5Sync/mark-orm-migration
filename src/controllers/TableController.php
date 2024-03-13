@@ -4,6 +4,7 @@ namespace markorm_migration\controllers;
 
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
+use markorm_migration\_markers\out;
 use markorm_migration\csv\CsvTable;
 use markorm_migration\sql\SQLTable;
 
@@ -11,7 +12,7 @@ class TableController
 {
     use migration_connect;
     use migration_tools;
-
+    use out;
 
 
 
@@ -78,7 +79,6 @@ class TableController
 
 
         foreach ($sqlTable->for() as $index => $row) {
-
         }
 
 
@@ -113,6 +113,8 @@ class TableController
         $strColls = $table->getCreateStringHeader();
 
         $query = "CREATE TABLE `$table->name` (\n\t$strColls\n)\n";
+
+        $this->log->write("create table $table->name", $query);
         $this->output->run($query);
     }
 
@@ -137,9 +139,13 @@ class TableController
 
 
 
-
+    /** 
+     * Удалить все таблицы
+     */
     function removeAllTables()
     {
-        echo "REMOVE ALL TABLES";
+        $tables = array_keys($this->loadTables());
+        $query = "DROP " . implode(', ', $tables);
+        $this->log->write("Удаляю все таблицы", $query);
     }
 }
