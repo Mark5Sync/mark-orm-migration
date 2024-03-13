@@ -24,24 +24,7 @@ abstract class Migration implements MigrationInterface
 
     final function __construct()
     {
-        [
-            'c' => $command,
-            'r' => $reference,
-            'b' => $backups,
-            'n' => $backupName,
-        ] = [
-            'c' => false,
-            'r' => false,
-            'b' => false,
-            'n' => false,
-            ...getopt("c:t:n:")
-        ];
-
-
-        if ($reference)  $this->referenceData = $reference;
-        if ($backups)    $this->backupData = $backups;
-        if ($backupName) $this->backupName = $backupName;
-
+        $command = $this->getCommand();
 
         if (!$command)
             die("Нужно указать команду для выполнения php ./migration.php -c [command]\n");
@@ -54,6 +37,31 @@ abstract class Migration implements MigrationInterface
         die("undefined command: $command\n");
     }
 
+
+    private function getCommand()
+    {
+        $options = getopt("c:r:b:n:", ["command:", "reference:", "backups:", "backupName:"]);
+
+        $defaults = [
+            'c' => false,
+            'r' => false,
+            'b' => false,
+            'n' => false,
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        $command    = $options['c'] ?? $options['command']    ?? false;
+        $reference  = $options['r'] ?? $options['reference']  ?? false;
+        $backups    = $options['b'] ?? $options['backups']    ?? false;
+        $backupName = $options['n'] ?? $options['backupName'] ?? false;
+
+        if ($reference)  $this->referenceData = $reference;
+        if ($backups)    $this->backupData = $backups;
+        if ($backupName) $this->backupName = $backupName;
+
+        return $command;
+    }
 
 
     private function dump()
