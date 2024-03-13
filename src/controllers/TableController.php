@@ -65,8 +65,18 @@ class TableController
             throw new \Exception("csv таблица отсутствует", 1);
 
         $csvTable->saveAs($saveToPath, function () use ($csvTable, $sqlTable) {
-            if (!$sqlTable)
-                throw new \Exception("csv таблица отсутствует", 1);
+            if (!$sqlTable) {
+                $this->log->write("$csvTable->name - только csv");
+
+                foreach ($csvTable->body as $row) {
+                    yield $row;
+                }
+
+                return;
+            }
+
+
+            $this->log->write("$csvTable->name - сравниваю таблицы");
 
             foreach ($sqlTable->for() as $index => $sqlRow) {
                 $csvRow = null;

@@ -95,7 +95,7 @@ abstract class Migration implements MigrationInterface
 
         foreach (array_keys($csvTables) as $tableName) {
             try {
-                $this->tableController->compareAndSave($backupPath, $csvTables[$tableName], $sqlTables[$tableName]);
+                $this->tableController->compareAndSave($backupPath, $csvTables[$tableName] ?? null, $sqlTables[$tableName] ?? null);
             } catch (\Throwable $th) {
                 echo " - $tableName: {$th->getMessage()}\n";
             }
