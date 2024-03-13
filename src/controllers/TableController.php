@@ -155,6 +155,7 @@ class TableController
 
         $query = "DROP table " . implode(', ', $tables);
         $this->log->write("# Удаляю все таблицы", $query);
+
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 0;');
         $this->connection->query($query);
         $this->connection->query('SET FOREIGN_KEY_CHECKS = 1;');
