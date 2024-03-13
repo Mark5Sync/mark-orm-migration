@@ -4,6 +4,7 @@
 namespace markorm_migration\both;
 
 use markdi\NotMark;
+use markorm_migration\_markers\controllers;
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 use markorm_migration\csv\CsvTable;
@@ -13,7 +14,7 @@ use markorm_migration\sql\SQLTable;
 class Header
 {
     use migration_tools;
-    use migration_connect;
+    use controllers;
 
 
 
@@ -97,7 +98,24 @@ class Header
 
     function initFromSql(SQLTable $table)
     {
-        $this->connection->query();
+        $colls = $this->tableController->getColls($table);
+
+        foreach ($colls as ['Field' => $field, 'Type' => $type, 'Null' => $isNull, 'Key' => $key, 'Default' => $default, 'Extra' => $extra]) {
+            $coll = new Coll($field, $type);
+
+            $coll->set('@null', $isNull);
+            $coll->set('@key',  $key);
+            if ($default)
+                $coll->set('@default',  $default);
+
+
+            if ($extra)
+                $coll->set('@extra',  $extra);
+
+
+            $this->colls[$field] = $coll;
+        }
+
     }
 
 

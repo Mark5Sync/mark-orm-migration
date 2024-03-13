@@ -20,10 +20,14 @@ class CsvTable
     private ?string $fileSaveAs = null;
     private $handle;
 
-    function __construct(private string $csvFile)
+    function __construct(private string $csvFile, ?Header $header = null)
     {
         $info = pathinfo($csvFile);
         $this->name = $info['filename'];
+
+
+        if ($header)
+            return $this->header = $header;
 
         $this->header = new Header();
         $body = $this->header->initFromCsv($this);
@@ -81,11 +85,20 @@ class CsvTable
     function saveAs(string $saveAs)
     {
         $this->fileSaveAs = "$saveAs/{$this->name}.csv";
-        $this->open('w');
+        $this->save();
     }
 
 
-    function whiteHeader()
+    function save()
+    {
+        $this->open('w');
+        $this->whiteHeader();
+        $this->writeBody();
+        $this->close();
+    }
+
+
+    private function whiteHeader()
     {
         $headersRows = $this->header->getTranspose();
 
@@ -101,7 +114,7 @@ class CsvTable
     }
 
 
-    function writeBody()
+    private function writeBody()
     {
         if (!$this->handle)
             throw new \Exception("Файл закрыт для записи ($this->name)", 1);

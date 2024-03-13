@@ -6,6 +6,7 @@ use markorm_migration\_markers\controllers;
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 use markorm_migration\both\Header;
+use markorm_migration\csv\CsvTable;
 
 class SQLTable
 {
@@ -16,59 +17,26 @@ class SQLTable
     public $colls;
     public Header $header;
 
-    function __construct(public string $name)
+    function __construct(public string $name, ?Header $header = null)
     {
         $this->colls = $this->tableController->getColls($this);
-        $this->header = (new Header())->initFromSql($this);
+
+        if ($header)
+            return $this->header = $header;
+
+        $this->header = new Header();
+        $this->header->initFromSql($this);
     }
 
 
-    function saveToCsv(string $pathTo)
+
+    function saveToCsv(string $path)
     {
-        if (!file_exists($pathTo))
-            mkdir($pathTo, 0777, true);
+        $fileName = "$path/{$this->name}.csv";
 
-        $header = $this->transpose($this->colls);
-
-
-        $file = fopen("$pathTo/{$this->name}.csv", 'w');
-        $colls = $header['Field'];
-
-        $this->writeFile($file, [
-            ...$header,
-            array_fill(0, count($colls), '---'),
-        ]);
-
-
-
-        $data = [];
-
-        foreach ($this->for() as $index => $row) {
-
-            foreach ($colls as $coll) {
-                $data[$index][$coll] = is_null($row[$coll]) ? 'NULL' : $row[$coll];
-            }
-
-            if (count($data) > 10) {
-                $this->writeFile($file, $data);
-                $data = [];
-            }
-        }
-
-        if (!empty($data))
-            $this->writeFile($file, $data);
-
-        fclose($file);
+        $table = new CsvTable($fileName, $this->header);
+        $table->save();
     }
-
-
-
-
-
-
-
-
-
 
 
 

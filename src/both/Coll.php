@@ -70,6 +70,8 @@ class Coll
 
     function set(string $type, string $value)
     {
+        $value = strtolower($value);
+
         switch (strtolower($type)) {
             case '@null':
             case '@isnull':
