@@ -42,6 +42,15 @@ class CsvTable
     }
 
 
+    function findId(int $id)
+    {
+        foreach ($this->body as $row) {
+            if (isset($row['id']) && $row['id'] == $id)
+                return $row;
+        }
+
+        return false;
+    }
 
 
     function open($rule = 'r')
@@ -68,11 +77,13 @@ class CsvTable
 
     function write(array $data)
     {
-        fputcsv($this->handle, $data);
+        fputcsv($this->handle, $this->replaceNull($data));
     }
 
-
-
+    private function replaceNull(array $row)
+    {
+        return array_map(fn ($itm) => is_null($itm) ? 'NULL' : $itm, $row);
+    }
 
     function getCreateStringHeader(): string
     {
@@ -82,18 +93,26 @@ class CsvTable
 
 
 
-    function saveAs(string $saveAs)
+    function saveAs(string $saveAs, ?callable $callback = null)
     {
         $this->fileSaveAs = "$saveAs/{$this->name}.csv";
-        $this->save();
+        $this->save($callback);
     }
 
 
-    function save()
+    function save(?callable $callback = null)
     {
         $this->open('w');
         $this->whiteHeader();
-        $this->writeBody();
+
+        if ($callback) {
+            foreach ($callback() as $row) {
+                $this->write([null, ...$row]);
+            }
+        } else {
+            $this->writeBody();
+        }
+
         $this->close();
     }
 

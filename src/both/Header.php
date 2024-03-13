@@ -39,6 +39,7 @@ class Header
          * @var Coll[]
          */
         $head = [];
+        $headerFields = [];
 
         $firstCollIsType = false;
         $collType = false;
@@ -48,7 +49,14 @@ class Header
                 $collType = array_shift($data);
 
             if (!$readHead) {
-                $body[] = array_map(fn ($val) => $val == 'NULL' ? null : $val, $data);
+                $row = [];
+
+                foreach ($data as $index => $val) {
+                    $field = $headerFields[$index];
+                    $row[$field] = $val == 'NULL' ? null : $val;
+                }
+
+                $body[] = $row;
                 continue;
             }
 
@@ -64,6 +72,7 @@ class Header
 
             foreach ($data as $index => $value) {
                 if (str_starts_with($value, '---')) {
+                    $headerFields = array_keys($head);
                     $readHead = false;
                     break;
                 }

@@ -35,7 +35,12 @@ class SQLTable
         $fileName = "$path/{$this->name}.csv";
 
         $table = new CsvTable($fileName, $this->header);
-        $table->save();
+
+        $table->save(function(){
+            foreach($this->for() as $row){
+                yield $row;
+            }
+        });
     }
 
 

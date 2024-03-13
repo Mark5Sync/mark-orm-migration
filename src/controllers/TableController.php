@@ -65,26 +65,20 @@ class TableController
         if (is_null($csvTable))
             throw new \Exception("csv таблица отсутствует", 1);
 
-        $csvTable->saveAs($saveToPath);
-        $colls = $csvTable->whiteHeader();
+        $csvTable->saveAs($saveToPath, function () use ($csvTable, $sqlTable) {
+            if (!$sqlTable)
+                throw new \Exception("csv таблица отсутствует", 1);
 
+            foreach ($sqlTable->for() as $index => $row) {
+                if (isset($row['id']) && $csvRow = $csvTable->findId($row['id'])) {
+                    $merged = $this->compareRow->merge($row, $csvRow);
+                    yield $merged;
+                    continue;
+                }
 
-
-        if (is_null($sqlTable)) {
-            $csvTable->writeBody();
-            $csvTable->close();
-            throw new \Exception("sql таблица отсутствует", 1);
-        }
-
-
-
-        foreach ($sqlTable->for() as $index => $row) {
-        }
-
-
-        $csvTable->close();
-
-        return false;
+                yield $row;
+            }
+        });
     }
 
 
@@ -145,7 +139,9 @@ class TableController
     function removeAllTables()
     {
         $tables = array_keys($this->loadTables());
-        $query = "DROP " . implode(', ', $tables);
+        $query = "DROP table " . implode(', ', $tables);
         $this->log->write("Удаляю все таблицы", $query);
+
+        $this->connection->query($query);
     }
 }
