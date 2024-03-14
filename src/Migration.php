@@ -37,10 +37,27 @@ abstract class Migration implements MigrationInterface
 
         $this->backupName = $this->commands->name;
 
+
+
         $this->connection->setPDO($this->getConnection());
 
-        if (method_exists($this, $this->commands->command))
-            return $this->{$this->commands->command}();
+
+
+
+        $this->transaction->start();
+
+        try {
+            if (method_exists($this, $this->commands->command))
+                return $this->{$this->commands->command}();
+
+            $this->transaction->commit();
+        } catch (\Throwable $th) {
+            $this->transaction->rollBack();
+
+            throw $th;
+        }
+
+
 
         die("undefined command: {$this->commands->command}\n");
     }
@@ -106,6 +123,10 @@ abstract class Migration implements MigrationInterface
 
         if (!file_exists($path))
             die("$this->backupName - ненайден\n");
+
+
+
+
 
         $csvTables = $this->tableController->referenceTables($path);
         if (empty($csvTables))

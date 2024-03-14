@@ -73,6 +73,9 @@ class SQLTable
 
         $collsStr = implode(',', $colls);
 
+        if (empty($executeDate))
+            return;
+
         $query = "INSERT INTO `$this->name`($collsStr) VALUES \n " . implode(", \n", $rows);
         $this->connection->query($query, $executeDate);
     }

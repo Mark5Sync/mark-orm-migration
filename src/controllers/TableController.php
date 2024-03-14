@@ -172,6 +172,8 @@ class TableController
                 $relation = $this->relationShip->tables[$table->name][$coll['Field']];
 
                 $coll['Relation'] = $relation;
+            } else {
+                $coll['Relation'] = null;
             }
         }
 

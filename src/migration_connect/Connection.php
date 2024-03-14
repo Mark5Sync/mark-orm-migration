@@ -24,4 +24,16 @@ class Connection
 
         return $stmt;
     }
+
+
+    function transaction()
+    {
+        return new Transaction($this->pdo);
+    }
+
+
+    function getPdo()
+    {
+        return $this->pdo;
+    }
 }
