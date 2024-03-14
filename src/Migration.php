@@ -38,8 +38,8 @@ abstract class Migration implements MigrationInterface
         $this->backupName = $this->commands->name;
 
 
-
-        $this->connection->setPDO($this->getConnection());
+        $pdo = $this->getConnection();
+        $this->connection->setPDO($pdo);
 
 
 
@@ -63,9 +63,16 @@ abstract class Migration implements MigrationInterface
     }
 
 
-
-    private function dump()
+    function createBackup(string $path)
     {
+        $backupName = '.autosave/autosave_' . date("Y-m-d_H:i:s");
+        $this->dump("$path/$backupName");
+    }
+
+
+    private function dump(?string $backupPath = null)
+    {
+        if (!$backupPath)
         if ($this->commands->continue != '1')
             if ($userInput = trim(strtolower(readline("Dump to $this->referenceData? [y|N]:"))))
                 if ($userInput != 'y')
@@ -77,11 +84,13 @@ abstract class Migration implements MigrationInterface
             exit("Таблицы отсутствуют\n");
 
 
-        $this->removeFromDesc->removeFolders($this->referenceData, true);
+        $saveTo = $backupPath ? $backupPath : $this->referenceData;
+
+        $this->removeFromDesc->removeFolders($saveTo, true);
 
 
         foreach ($tables as $table) {
-            $table->saveToCsv($this->referenceData);
+            $table->saveToCsv($saveTo);
         }
     }
 
@@ -125,7 +134,7 @@ abstract class Migration implements MigrationInterface
             die("$this->backupName - ненайден\n");
 
 
-
+        $this->createBackup($this->backupData);
 
 
         $csvTables = $this->tableController->referenceTables($path);
