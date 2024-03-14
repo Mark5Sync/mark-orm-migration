@@ -15,8 +15,8 @@ class Header
     use migration_tools;
     use controllers;
 
-
     public $headerFields = [];
+    public $relationsTables = [];
 
     /** 
      * @var Coll[]
@@ -92,6 +92,10 @@ class Header
                 } else {
                     $currentColl->auto($valueLowerCase);
                 }
+
+
+                if ($currentColl->relationTable)
+                    $this->relationsTables[] = $currentColl->relationTable;
             }
         }
 
@@ -108,7 +112,15 @@ class Header
     {
         $colls = $this->tableController->getColls($table);
 
-        foreach ($colls as ['Field' => $field, 'Type' => $type, 'Null' => $isNull, 'Key' => $key, 'Default' => $default, 'Extra' => $extra]) {
+        foreach ($colls as [
+            'Field' => $field, 
+            'Type' => $type, 
+            'Null' => $isNull, 
+            'Key' => $key, 
+            'Default' => $default, 
+            'Extra' => $extra,
+            'Relation' => $relation,
+        ]) {
             $coll = new Coll($field, $type);
 
             $coll->set('@null', $isNull);
@@ -120,6 +132,12 @@ class Header
             if ($extra)
                 $coll->set('@extra',  $extra);
 
+            if ($relation){
+                $coll->set('@relationTable', $relation['table']);
+                $coll->set('@relationColl',  $relation['coll']);
+
+                $this->relationsTables[] = $relation['table'];
+            }
 
             $this->colls[$field] = $coll;
         }

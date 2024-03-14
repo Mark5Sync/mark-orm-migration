@@ -103,7 +103,7 @@ class Coll
                 $this->extra = $value;
                 break;
 
-            case '@relation':
+            
             case '@relationtable':
                 if ($value)
                     $this->relationTable = $value;

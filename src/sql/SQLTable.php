@@ -14,7 +14,7 @@ class SQLTable
     use controllers;
     use migration_tools;
 
-    public $colls;
+    // public $colls;
     public Header $header;
 
     function __construct(public string $name, ?Header $header = null)
@@ -23,7 +23,7 @@ class SQLTable
             return $this->header = $header;
 
 
-        $this->colls = $this->tableController->getColls($this);
+        // $this->colls = $this->tableController->getColls($this);
 
         $this->header = new Header();
         $this->header->initFromSql($this);

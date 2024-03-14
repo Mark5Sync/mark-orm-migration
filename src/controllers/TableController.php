@@ -28,12 +28,47 @@ class TableController
         foreach ($tableNames as $tableName) {
             ['filename' => $filename] = pathinfo("$referenceFolder/$tableName");
             $csvTable = new CsvTable("$referenceFolder/$tableName");
-            $result[$filename] = $csvTable;
+            $result[$csvTable->name] = $csvTable;
         }
+
+        $result = $this->relationSort($result);
 
         return $result;
     }
 
+
+    /** 
+     * @var CsvTable[] $tables
+     * @return CsvTable[]
+     */
+    private function relationSort(array $tables)
+    {
+        $result = [];
+
+        while (!empty($tables)) {
+
+            /** @var CsvTable $table */
+            foreach ($tables as $table) {
+                $push = true;
+
+                foreach ($table->header->relationsTables as $relationTableName) {
+                    if (!isset($result[$relationTableName])){
+                        $push = false;
+                        break;
+                    }
+                }
+
+                if (!$push)
+                    continue;
+
+                unset($tables[$table->name]);
+                $result[$table->name] = $table;
+            }
+        }
+
+
+        return $result;
+    }
 
 
     /**
@@ -133,8 +168,11 @@ class TableController
 
 
         foreach ($result as &$coll) {
-            if ($coll['Key'] == 'MUL')
-                $coll['relation'] = $this->relationShip->tables[$table->name][$coll['Field']];
+            if ($coll['Key'] == 'MUL') {
+                $relation = $this->relationShip->tables[$table->name][$coll['Field']];
+
+                $coll['Relation'] = $relation;
+            }
         }
 
         return $result;

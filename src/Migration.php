@@ -8,15 +8,17 @@ use markorm_migration\_markers\controllers;
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 
+
 abstract class Migration implements MigrationInterface
 {
     use migration_connect;
     use controllers;
     use migration_tools;
 
-    public  $referenceData = './referenceData';
-    public  $backupData    = './backupData';
-    public  $logs          = './logs';
+
+    public $referenceData = './referenceData';
+    public $backupData    = './backupData';
+    public $logs          = './logs';
 
     private $backupName    = false;
 
@@ -24,52 +26,33 @@ abstract class Migration implements MigrationInterface
 
     final function __construct()
     {
-        $command = $this->getCommand();
-
-        if (!$command)
+        if (!$this->commands->command)
             die("Нужно указать команду для выполнения php ./migration.php -c [command]\n");
+
+        if ($ref = $this->commands->reference)
+            $this->referenceData = $ref;
+
+        if ($back = $this->commands->backups)
+            $this->backupData = $back;
+
+        $this->backupName = $this->commands->name;
 
         $this->connection->setPDO($this->getConnection());
 
-        if (method_exists($this, $command))
-            return $this->{$command}();
+        if (method_exists($this, $this->commands->command))
+            return $this->{$this->commands->command}();
 
-        die("undefined command: $command\n");
+        die("undefined command: {$this->commands->command}\n");
     }
 
-
-    private function getCommand()
-    {
-        $options = getopt("c:r:b:n:", ["command:", "reference:", "backups:", "backupName:"]);
-
-        $defaults = [
-            'c' => false,
-            'r' => false,
-            'b' => false,
-            'n' => false,
-        ];
-
-        $options = array_merge($defaults, $options);
-
-        $command    = $options['c'] ?? $options['command']    ?? false;
-        $reference  = $options['r'] ?? $options['reference']  ?? false;
-        $backups    = $options['b'] ?? $options['backups']    ?? false;
-        $backupName = $options['n'] ?? $options['backupName'] ?? false;
-
-        if ($reference)  $this->referenceData = $reference;
-        if ($backups)    $this->backupData = $backups;
-        if ($backupName) $this->backupName = $backupName;
-
-        return $command;
-    }
 
 
     private function dump()
     {
-        $userInput = trim(strtolower(readline("Dump to $this->referenceData? [y|N]:")));
-
-        if ($userInput != 'y')
-            return;
+        if ($this->commands->continue != '1')
+            if ($userInput = trim(strtolower(readline("Dump to $this->referenceData? [y|N]:"))))
+                if ($userInput != 'y')
+                    return;
 
 
         $tables = $this->tableController->loadTables();
