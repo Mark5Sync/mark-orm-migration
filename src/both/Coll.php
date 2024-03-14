@@ -13,6 +13,17 @@ class Coll
     use csv;
 
 
+    public $props = [
+        'field',
+        'type',
+        'isNull',
+        'key',
+        'default',
+        'extra',
+        'relationTable',
+        'relationColl',
+    ];
+
 
     public string $field;
     public ?string $type = null;

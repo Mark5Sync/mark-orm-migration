@@ -134,15 +134,16 @@ class Header
         $result = [];
 
 
-        foreach ($this->colls as $props) {
-            foreach ($props as $key => $value) {
-                if (empty($result[$key]))
-                    $result[$key][] = "@$key";
+        foreach ($this->colls as $coll) {
+            foreach ($coll->props as $prop) {
+                $value = $coll->{$prop};
+                if (empty($result[$prop]))
+                    $result[$prop][] = "@$prop";
 
-                if ($key == 'Type' && $newType = $this->types->typeCode($value))
+                if ($prop == 'type' && $newType = $this->types->typeCode($value))
                     $value = $newType;
 
-                $result[$key][] = $value;
+                $result[$prop][] = $value;
             }
         }
 
