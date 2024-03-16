@@ -80,8 +80,11 @@ abstract class Migration implements MigrationInterface
 
 
         $tables = $this->tableController->loadTables();
-        if (empty($tables))
+        if (empty($tables)){
+            if ($backupPath)
+                return;
             exit("Таблицы отсутствуют\n");
+        }
 
 
         $saveTo = $backupPath ? $backupPath : $this->referenceData;
