@@ -1,6 +1,6 @@
 <?php
 namespace markorm_migration\_markers;
-use markdi\markdi;
+use marksync\provider\provider;
 use markorm_migration\controllers\TableController;
 
 /**
@@ -8,8 +8,8 @@ use markorm_migration\controllers\TableController;
 
 */
 trait controllers {
-    use markdi;
+    use provider;
 
-   function tableController(): TableController { return new TableController; }
+    function tableController(): TableController { return new TableController; }
 
 }

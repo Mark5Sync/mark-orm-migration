@@ -3,7 +3,7 @@
 
 namespace markorm_migration\both;
 
-use markdi\NotMark;
+use marksync\provider\NotMark;
 use markorm_migration\_markers\controllers;
 use markorm_migration\_markers\migration_tools;
 use markorm_migration\csv\CsvTable;

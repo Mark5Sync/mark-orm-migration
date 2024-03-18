@@ -2,7 +2,7 @@
 
 namespace markorm_migration\csv;
 
-use markdi\NotMark;
+use marksync\provider\NotMark;
 use markorm_migration\_markers\migration_tools;
 use markorm_migration\both\Header;
 

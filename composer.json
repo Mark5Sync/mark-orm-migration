@@ -18,6 +18,6 @@
         "mark": "vendor/bin/mark"
     },
     "require": {
-        "markdi/markdi": "^3.2"
+        "marksync/provider": "^1.0"
     }
 }

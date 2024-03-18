@@ -1,6 +1,6 @@
 <?php
 namespace markorm_migration\_markers;
-use markdi\markdi;
+use marksync\provider\provider;
 use markorm_migration\sql\SQLTable;
 
 /**
@@ -8,7 +8,7 @@ use markorm_migration\sql\SQLTable;
 
 */
 trait sql {
-    use markdi;
+    use provider;
 
    function sQLTable(): SQLTable { return new SQLTable; }
 

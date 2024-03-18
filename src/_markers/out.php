@@ -1,6 +1,6 @@
 <?php
 namespace markorm_migration\_markers;
-use markdi\markdi;
+use marksync\provider\provider;
 use markorm_migration\out\Output;
 use markorm_migration\out\Log;
 
@@ -10,7 +10,7 @@ use markorm_migration\out\Log;
 
 */
 trait out {
-    use markdi;
+    use provider;
 
    function output(): Output { return new Output; }
    function log(): Log { return new Log; }

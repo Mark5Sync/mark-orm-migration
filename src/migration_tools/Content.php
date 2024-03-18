@@ -2,7 +2,7 @@
 
 namespace markorm_migration\migration_tools;
 
-use markdi\Mark;
+use marksync\provider\Mark;
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\out;
 use markorm_migration\csv\Table;

@@ -1,6 +1,6 @@
 <?php
 namespace markorm_migration\_markers;
-use markdi\markdi;
+use marksync\provider\provider;
 use markorm_migration\migration_tools\Content;
 use markorm_migration\migration_tools\CompareRow;
 use markorm_migration\migration_tools\Types;
@@ -18,7 +18,7 @@ use markorm_migration\migration_tools\Commands;
 
 */
 trait migration_tools {
-    use markdi;
+    use provider;
 
    function _content(): Content { return new Content($this); }
    function compareRow(): CompareRow { return new CompareRow; }
