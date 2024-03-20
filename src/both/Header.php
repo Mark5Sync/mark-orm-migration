@@ -133,10 +133,12 @@ class Header
                 $coll->set('@extra',  $extra);
 
             if ($relation){
-                $coll->set('@relationTable', $relation['table']);
-                $coll->set('@relationColl',  $relation['coll']);
+                ['table' => $relationTable, 'coll' => $relationColl] = $relation;
 
-                $this->relationsTables[] = $relation['table'];
+                $coll->set('@relationTable', $relationTable);
+                $coll->set('@relationColl',  $relationColl);
+
+                $this->relationsTables[] = $relationTable;
             }
 
             $this->colls[$field] = $coll;

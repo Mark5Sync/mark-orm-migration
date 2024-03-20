@@ -168,7 +168,7 @@ class TableController
 
 
         foreach ($result as &$coll) {
-            if ($coll['Key'] == 'MUL') {
+            if (isset($this->relationShip->tables[$table->name][$coll['Field']])) {
                 $relation = $this->relationShip->tables[$table->name][$coll['Field']];
 
                 $coll['Relation'] = $relation;
