@@ -81,9 +81,11 @@ class Coll
 
     function set(string $type, string $value)
     {
-        $value = strtolower($value);
-        if ($value == 'null')
+        if (strtolower($value) == 'null')
             $value = null;
+
+        if ($value && $type != '@relationtable')
+            $value = strtolower($value);
 
         switch (strtolower($type)) {
             case '@null':
@@ -103,7 +105,7 @@ class Coll
                 $this->extra = $value;
                 break;
 
-            
+
             case '@relationtable':
                 if ($value)
                     $this->relationTable = $value;

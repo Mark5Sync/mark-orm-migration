@@ -37,6 +37,7 @@ class TableController
     }
 
 
+
     /** 
      * @var CsvTable[] $tables
      * @return CsvTable[]
@@ -44,8 +45,22 @@ class TableController
     private function relationSort(array $tables)
     {
         $result = [];
+        $iteration = count($tables) ** 2;
+        
 
         while (!empty($tables)) {
+            $iteration--;
+
+            if ($iteration < 0){
+                print_r(array_keys($tables));
+                echo "  |  |  |  |  |  |  |\n";
+                echo "  V  V  V  V  V  V  V\n";
+                print_r(array_keys($result));
+                echo "---------------------\n";
+
+                throw new \Exception("Не получается отсортировать таблицы, проверьте связи", 1);
+            }
+                
 
             /** @var CsvTable $table */
             foreach ($tables as $table) {
@@ -64,6 +79,9 @@ class TableController
                 unset($tables[$table->name]);
                 $result[$table->name] = $table;
             }
+
+
+            echo ".";
         }
 
 

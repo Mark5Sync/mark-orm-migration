@@ -45,7 +45,7 @@ class Header
 
         while (($data = $table->read()) !== false) {
             if ($firstCollIsType)
-                $collType = array_shift($data);
+                $collType = strtolower(array_shift($data));
 
             if (!$readHead) {
                 $row = [];
@@ -85,12 +85,11 @@ class Header
 
 
                 $currentColl = $head[$coll];
-                $valueLowerCase = strtolower($value);
 
                 if ($collType) {
-                    $currentColl->set($collType, $valueLowerCase);
+                    $currentColl->set($collType, $value);
                 } else {
-                    $currentColl->auto($valueLowerCase);
+                    $currentColl->auto($value);
                 }
 
 
