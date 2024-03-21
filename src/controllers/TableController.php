@@ -46,12 +46,12 @@ class TableController
     {
         $result = [];
         $iteration = count($tables) ** 2;
-        
+
 
         while (!empty($tables)) {
             $iteration--;
 
-            if ($iteration < 0){
+            if ($iteration < 0) {
                 print_r(array_keys($tables));
                 echo "  |  |  |  |  |  |  |\n";
                 echo "  V  V  V  V  V  V  V\n";
@@ -60,14 +60,14 @@ class TableController
 
                 throw new \Exception("Не получается отсортировать таблицы, проверьте связи", 1);
             }
-                
+
 
             /** @var CsvTable $table */
             foreach ($tables as $table) {
                 $push = true;
 
                 foreach ($table->header->relationsTables as $relationTableName) {
-                    if (!isset($result[$relationTableName])){
+                    if (!isset($result[$relationTableName])) {
                         $push = false;
                         break;
                     }
@@ -118,16 +118,12 @@ class TableController
             throw new \Exception("csv таблица отсутствует", 1);
 
         $csvTable->saveAs($saveToPath, function () use ($csvTable, $sqlTable) {
-            if (!$sqlTable) {
-                $this->log->write("$csvTable->name - только csv");
-
-                foreach ($csvTable->body as $row) {
-                    yield $row;
-                }
-
-                return;
+            foreach ($csvTable->body as $row) {
+                yield $row;
             }
 
+            if (!$sqlTable)
+                return;
 
             $this->log->write("$csvTable->name - сравниваю таблицы");
 

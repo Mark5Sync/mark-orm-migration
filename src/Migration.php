@@ -148,7 +148,13 @@ abstract class Migration implements MigrationInterface
 
 
         foreach ($csvTables as $table) {
-            $this->tableController->upload($table);
+            try {
+                $this->tableController->upload($table);
+            } catch (\Throwable $th) {
+                echo "Ошибка в таблице \"{$table->name}\"";
+                throw new $th;
+                
+            }
         }
     }
 }
