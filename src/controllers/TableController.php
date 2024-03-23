@@ -118,7 +118,14 @@ class TableController
             throw new \Exception("csv таблица отсутствует", 1);
 
         $csvTable->saveAs($saveToPath, function () use ($csvTable, $sqlTable) {
+            $exceptionsId = [];
+
             foreach ($csvTable->body as $row) {
+                if (isset($row['id'])){
+                    $exceptionsId[$row['id']] = true;
+                } else {
+                    echo " -- {$csvTable->name}.csv - отсутствует столбец id\n";
+                }
                 yield $row;
             }
 
@@ -130,10 +137,10 @@ class TableController
             foreach ($sqlTable->for() as $index => $sqlRow) {
                 $csvRow = null;
 
-                if (isset($sqlRow['id']))
-                    $csvRow = $csvTable->findId($sqlRow['id']);
-                else
-                    echo "--\n";
+                if (isset($sqlRow['id'])){
+                    if (isset($exceptionsId[$sqlRow['id']]))
+                        continue;
+                } else echo " -- {$csvTable->name}.sql - отсутствует столбец id\n";
 
                 $merged = $this->compareRow->merge($csvTable->header->headerFields, $csvRow, $sqlRow);
 

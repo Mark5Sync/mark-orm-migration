@@ -9,7 +9,8 @@ use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 
 
-abstract class Migration implements MigrationInterface
+abstract class 
+Migration implements MigrationInterface
 {
     use migration_connect;
     use controllers;
@@ -108,10 +109,18 @@ abstract class Migration implements MigrationInterface
         $sqlTables = $this->tableController->loadTables();
 
         $backupName = 'backup_' . date("Y-m-d_H:i:s");
-        $backupPath = "$this->backupData/$backupName";
+        $realBackupDataPath = realpath($this->backupData);
+        $backupPath = "$realBackupDataPath/$backupName";
 
-        if (!file_exists($backupPath))
+        if (!file_exists($backupPath)){
             mkdir($backupPath, 0777, true);
+            
+            $symlink = "$realBackupDataPath/current";
+            if (linkinfo($symlink))
+                unlink($symlink);
+
+            symlink($backupPath, $symlink);
+        }
 
         foreach (array_keys($csvTables) as $tableName) {
             try {
@@ -123,18 +132,30 @@ abstract class Migration implements MigrationInterface
     }
 
 
-
-
-
-    private function up()
+    private function testReference()
     {
-        if (!$this->backupName)
+        // $this->tableController->removeAllTables();
+
+        try {
+            $this->backup();
+            $this->up('current');
+        } catch (\Throwable $th) {
+            throw $th;
+        } finally {
+            // $this->tableController->removeAllTables();
+        }
+    }
+
+
+    private function up(?string $backupName = null)
+    {
+        if (!$this->backupName && !$backupName)
             die("Нужно указать backupName php migration -c up -n ... \n");
 
-        $path = "$this->backupData/$this->backupName";
+        $path = "$this->backupData/" . ($backupName ? $backupName : $this->backupName);
 
         if (!file_exists($path))
-            die("$this->backupName - ненайден\n");
+            die("$path - ненайден\n");
 
 
         $this->createBackup($this->backupData);
@@ -151,9 +172,8 @@ abstract class Migration implements MigrationInterface
             try {
                 $this->tableController->upload($table);
             } catch (\Throwable $th) {
-                echo "Ошибка в таблице \"{$table->name}\"";
-                throw new $th;
-                
+                echo "Ошибка в таблице \"{$table->name}\" \n";
+                throw $th;
             }
         }
     }
