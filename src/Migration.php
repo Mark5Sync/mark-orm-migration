@@ -9,7 +9,7 @@ use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 
 
-abstract class 
+abstract class
 Migration implements MigrationInterface
 {
     use migration_connect;
@@ -74,14 +74,14 @@ Migration implements MigrationInterface
     private function dump(?string $backupPath = null)
     {
         if (!$backupPath)
-        if ($this->commands->continue != '1')
-            if ($userInput = trim(strtolower(readline("Dump to $this->referenceData? [y|N]:"))))
-                if ($userInput != 'y')
-                    return;
+            if ($this->commands->continue != '1')
+                if ($userInput = trim(strtolower(readline("Dump to $this->referenceData? [y|N]:"))))
+                    if ($userInput != 'y')
+                        return;
 
 
         $tables = $this->tableController->loadTables();
-        if (empty($tables)){
+        if (empty($tables)) {
             if ($backupPath)
                 return;
             exit("Таблицы отсутствуют\n");
@@ -109,14 +109,19 @@ Migration implements MigrationInterface
         $sqlTables = $this->tableController->loadTables();
 
         $backupName = 'backup_' . date("Y-m-d_H:i:s");
+
+        
+        if (!file_exists($this->backupData))
+            mkdir($this->backupData, 0777, true);
+
         $realBackupDataPath = realpath($this->backupData);
         $backupPath = "$realBackupDataPath/$backupName";
 
-        if (!file_exists($backupPath)){
+        if (!file_exists($backupPath)) {
             mkdir($backupPath, 0777, true);
-            
+
             $symlink = "$realBackupDataPath/current";
-            if (linkinfo($symlink))
+            if (file_exists($symlink) && linkinfo($symlink))
                 unlink($symlink);
 
             symlink($backupPath, $symlink);
