@@ -110,7 +110,7 @@ Migration implements MigrationInterface
 
         $backupName = 'backup_' . date("Y-m-d_H:i:s");
 
-        
+
         if (!file_exists($this->backupData))
             mkdir($this->backupData, 0777, true);
 
@@ -181,5 +181,28 @@ Migration implements MigrationInterface
                 throw $th;
             }
         }
+    }
+
+
+    private function createScheme()
+    {
+        $csvTables = $this->tableController->referenceTables($this->referenceData);
+
+        $tables = [];
+        foreach (array_values($csvTables) as $index => $table) {
+            try {
+                $colls = $table->header->exportColls();
+                $tables[] = [
+                    'name' => $table->name,
+                    'position' => [0, $index * 300],
+                    'colls' => $colls,
+                    'test' => $table->body,
+                ];
+            } catch (\Throwable $th) {
+                echo " - {$table->name}: {$th->getMessage()}\n";
+            }
+        }
+
+        file_put_contents("$this->referenceData/scheme.json", json_encode(['tables' => $tables]));
     }
 }

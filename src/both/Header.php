@@ -116,11 +116,11 @@ class Header
         $colls = $this->tableController->getColls($table);
 
         foreach ($colls as [
-            'Field' => $field, 
-            'Type' => $type, 
-            'Null' => $isNull, 
-            'Key' => $key, 
-            'Default' => $default, 
+            'Field' => $field,
+            'Type' => $type,
+            'Null' => $isNull,
+            'Key' => $key,
+            'Default' => $default,
             'Extra' => $extra,
             'Relation' => $relation,
         ]) {
@@ -135,7 +135,7 @@ class Header
             if ($extra)
                 $coll->set('@extra',  $extra);
 
-            if ($relation){
+            if ($relation) {
                 ['table' => $relationTable, 'coll' => $relationColl] = $relation;
 
                 $coll->set('@relationTable', $relationTable);
@@ -146,10 +146,19 @@ class Header
 
             $this->colls[$field] = $coll;
         }
-
     }
 
 
+    function exportColls()
+    {
+        $result = [];
+
+        foreach ($this->colls as $coll) {
+            $result[] = $coll->export();
+        }
+
+        return $result;
+    }
 
 
     function getTranspose()
