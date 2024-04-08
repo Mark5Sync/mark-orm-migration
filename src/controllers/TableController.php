@@ -21,7 +21,7 @@ class TableController
      */
     function referenceTables(string $referenceFolder)
     {
-        $tableNames = array_diff(scandir($referenceFolder), ['.', '..']);
+        $tableNames = array_filter(array_diff(scandir($referenceFolder), ['.', '..']), fn($file) => pathinfo("$referenceFolder/$file")['extension'] == 'csv');
 
         $result = [];
 

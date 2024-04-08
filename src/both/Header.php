@@ -44,6 +44,10 @@ class Header
         $collType = false;
 
         while (($data = $table->read()) !== false) {
+            // check empty row
+            if (empty($data) || is_null($data[0]))
+                continue;
+
             if ($firstCollIsType)
                 $collType = strtolower(array_shift($data));
 
