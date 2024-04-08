@@ -188,13 +188,24 @@ Migration implements MigrationInterface
     {
         $csvTables = $this->tableController->referenceTables($this->referenceData);
 
+
+        $scheme = file_exists("$this->referenceData/scheme.json")
+            ? json_decode(file_get_contents("$this->referenceData/scheme.json"), true)
+            : ['tables' => []];
+
+
         $tables = [];
         foreach (array_values($csvTables) as $index => $table) {
             try {
+                $schemeTable = current(array_filter($scheme['tables'], function ($itm) use ($table) {
+                    return $table->name == $itm['name'];
+                }));
                 $colls = $table->header->exportColls();
+
+
                 $tables[] = [
                     'name' => $table->name,
-                    'position' => [0, $index * 300],
+                    'position' => $schemeTable ? $schemeTable['position'] : [0, $index * 300],
                     'colls' => $colls,
                     'test' => $table->body,
                 ];
