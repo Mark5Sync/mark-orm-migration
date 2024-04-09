@@ -48,6 +48,9 @@ Migration implements MigrationInterface
         $this->transaction->start();
 
         try {
+            if ($this->commands->deleteTablesBefore=='y')
+                $this->tableController->removeAllTables();
+
             if (method_exists($this, $this->commands->command))
                 return $this->{$this->commands->command}();
 
