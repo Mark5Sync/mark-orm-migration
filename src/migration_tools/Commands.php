@@ -11,7 +11,6 @@ class Commands
         'b' => 'backups',
         'n' => 'name',
         'y' => 'continue',
-        'd' => 'deleteTablesBefore',
     ];
 
 
@@ -20,7 +19,6 @@ class Commands
     public $backups;
     public $name;
     public $continue;
-    public $deleteTablesBefore;
 
 
     function __construct()

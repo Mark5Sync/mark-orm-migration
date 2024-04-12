@@ -226,17 +226,6 @@ class Coll
         }
     }
 
-    
-    function export(){
-        $result = [];
-
-        foreach ($this->props as $prop) {
-            $result[$prop] = $this->{$prop};
-        }
-
-        return $result;
-    }
-
 
     function toSql()
     {

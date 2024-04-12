@@ -48,9 +48,6 @@ Migration implements MigrationInterface
         $this->transaction->start();
 
         try {
-            if ($this->commands->deleteTablesBefore=='y')
-                $this->tableController->removeAllTables();
-
             if (method_exists($this, $this->commands->command))
                 return $this->{$this->commands->command}();
 
@@ -113,7 +110,7 @@ Migration implements MigrationInterface
 
         $backupName = 'backup_' . date("Y-m-d_H:i:s");
 
-
+        
         if (!file_exists($this->backupData))
             mkdir($this->backupData, 0777, true);
 
@@ -184,39 +181,5 @@ Migration implements MigrationInterface
                 throw $th;
             }
         }
-    }
-
-
-    private function createScheme()
-    {
-        $csvTables = $this->tableController->referenceTables($this->referenceData);
-
-
-        $scheme = file_exists("$this->referenceData/scheme.json")
-            ? json_decode(file_get_contents("$this->referenceData/scheme.json"), true)
-            : ['tables' => []];
-
-
-        $tables = [];
-        foreach (array_values($csvTables) as $index => $table) {
-            try {
-                $schemeTable = current(array_filter($scheme['tables'], function ($itm) use ($table) {
-                    return $table->name == $itm['name'];
-                }));
-                $colls = $table->header->exportColls();
-
-
-                $tables[] = [
-                    'name' => $table->name,
-                    'position' => $schemeTable ? $schemeTable['position'] : [0, $index * 300],
-                    'colls' => $colls,
-                    'test' => $table->body,
-                ];
-            } catch (\Throwable $th) {
-                echo " - {$table->name}: {$th->getMessage()}\n";
-            }
-        }
-
-        file_put_contents("$this->referenceData/scheme.json", json_encode(['tables' => $tables]));
     }
 }
