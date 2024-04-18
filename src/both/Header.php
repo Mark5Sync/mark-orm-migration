@@ -26,6 +26,7 @@ class Header
 
     function initFromCsv(CsvTable $table)
     {
+        echo "csv init $table->name\n";
         $table->open();
 
 
