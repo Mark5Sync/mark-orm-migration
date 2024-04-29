@@ -22,6 +22,8 @@ class Coll
         'extra',
         'relationTable',
         'relationColl',
+        'relationOnDelete',
+        'relationOnUpdate',
     ];
 
 
@@ -34,7 +36,8 @@ class Coll
 
     public ?string $relationTable = null;
     public ?string $relationColl = null;
-
+    public ?string $relationOnDelete = null;
+    public ?string $relationOnUpdate = null;
 
 
     function __construct(string $field, string $type)
@@ -114,6 +117,16 @@ class Coll
             case '@relationcoll':
                 if ($value)
                     $this->relationColl = $value;
+                break;
+
+            case '@relationondelete':
+                if ($value)
+                    $this->relationOnDelete = $value;
+                break;
+
+            case '@relationonupdate':
+                if ($value)
+                    $this->relationOnUpdate = $value;
                 break;
 
             default:
@@ -227,13 +240,26 @@ class Coll
     }
 
 
+    private function getSqlRelation()
+    {
+        if (!$this->relationTable)
+            return '';
+
+        $onDelete = $this->relationOnDelete ? "ON DELETE $this->relationOnDelete" : '';
+        $onUpdate = $this->relationOnUpdate ? "ON UPDATE $this->relationOnUpdate" : '';
+
+        $result = "REFERENCES {$this->relationTable}({$this->relationColl}) $onDelete $onUpdate";
+
+        return $result;
+    }
+
     function toSql()
     {
         $isNull = $this->isNull ? 'DEFAULT NULL' : 'NOT NULL';
 
         $primKey = $this->getSqlKey();
 
-        $relation = $this->relationTable ? "REFERENCES {$this->relationTable}({$this->relationColl})" : '';
+        $relation = $this->getSqlRelation();
 
         $result = "{$this->field} {$this->type} $isNull $primKey {$this->extra} $relation";
         return $result;

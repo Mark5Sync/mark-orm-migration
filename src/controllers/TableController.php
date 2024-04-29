@@ -26,7 +26,10 @@ class TableController
         $result = [];
 
         foreach ($tableNames as $tableName) {
-            ['filename' => $filename] = pathinfo("$referenceFolder/$tableName");
+            ['filename' => $filename, 'extension' => $extension] = pathinfo("$referenceFolder/$tableName");
+            if ($extension != 'csv')
+                continue;
+
             $csvTable = new CsvTable("$referenceFolder/$tableName");
             $result[$csvTable->name] = $csvTable;
         }
