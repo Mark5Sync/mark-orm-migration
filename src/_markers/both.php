@@ -1,13 +1,8 @@
 <?php
-
-use marksync\provider\provider;
-
 namespace markorm_migration\_markers;
+use marksync\provider\provider;
 use markorm_migration\both\Coll;
 use markorm_migration\both\Header;
-
-
-
 
 /**
  * @property-read Coll $coll

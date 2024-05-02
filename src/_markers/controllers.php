@@ -10,6 +10,6 @@ use markorm_migration\controllers\TableController;
 trait controllers {
     use provider;
 
-    function tableController(): TableController { return new TableController; }
+   function tableController(): TableController { return new TableController; }
 
 }

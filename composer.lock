@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8fc8f84fdc34495e8816b2608b666368",
+    "content-hash": "ae55c8174a45f2989b5a8ba042c0516b",
     "packages": [
         {
             "name": "composer/class-map-generator",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/class-map-generator.git",
-                "reference": "953cc4ea32e0c31f2185549c7d216d7921f03da9"
+                "reference": "8286a62d243312ed99b3eee20d5005c961adb311"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/class-map-generator/zipball/953cc4ea32e0c31f2185549c7d216d7921f03da9",
-                "reference": "953cc4ea32e0c31f2185549c7d216d7921f03da9",
+                "url": "https://api.github.com/repos/composer/class-map-generator/zipball/8286a62d243312ed99b3eee20d5005c961adb311",
+                "reference": "8286a62d243312ed99b3eee20d5005c961adb311",
                 "shasum": ""
             },
             "require": {
@@ -61,7 +61,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/class-map-generator/issues",
-                "source": "https://github.com/composer/class-map-generator/tree/1.1.0"
+                "source": "https://github.com/composer/class-map-generator/tree/1.1.1"
             },
             "funding": [
                 {
@@ -77,20 +77,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-30T13:58:57+00:00"
+            "time": "2024-03-15T12:53:41+00:00"
         },
         {
             "name": "composer/pcre",
-            "version": "3.1.1",
+            "version": "3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "00104306927c7a0919b4ced2aaa6782c1e61a3c9"
+                "reference": "5b16e25a5355f1f3afdfc2f954a0a80aec4826a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/00104306927c7a0919b4ced2aaa6782c1e61a3c9",
-                "reference": "00104306927c7a0919b4ced2aaa6782c1e61a3c9",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/5b16e25a5355f1f3afdfc2f954a0a80aec4826a8",
+                "reference": "5b16e25a5355f1f3afdfc2f954a0a80aec4826a8",
                 "shasum": ""
             },
             "require": {
@@ -132,7 +132,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.1.1"
+                "source": "https://github.com/composer/pcre/tree/3.1.3"
             },
             "funding": [
                 {
@@ -148,27 +148,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-11T07:11:09+00:00"
+            "time": "2024-03-19T10:26:25+00:00"
         },
         {
-            "name": "markdi/markdi",
-            "version": "v3.2.1",
+            "name": "marksync/provider",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Shveikin/markdi.git",
-                "reference": "faad3d539503ada4805d908d4f170364d1dea974"
+                "url": "https://github.com/Mark5Sync/provider.git",
+                "reference": "acdd80f286c759ccfa75bbc94146daff3b580465"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Shveikin/markdi/zipball/faad3d539503ada4805d908d4f170364d1dea974",
-                "reference": "faad3d539503ada4805d908d4f170364d1dea974",
+                "url": "https://api.github.com/repos/Mark5Sync/provider/zipball/acdd80f286c759ccfa75bbc94146daff3b580465",
+                "reference": "acdd80f286c759ccfa75bbc94146daff3b580465",
                 "shasum": ""
             },
             "require": {
                 "composer/class-map-generator": "^1.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^10.4"
             },
             "bin": [
                 "bin/mark"
@@ -176,8 +173,7 @@
             "type": "meta",
             "autoload": {
                 "psr-4": {
-                    "markdi\\": "src/",
-                    "markexample\\": "example/"
+                    "marksync\\provider\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -186,29 +182,29 @@
             ],
             "authors": [
                 {
-                    "name": "Ilya Shveikin",
+                    "name": "II",
                     "email": "no_soap_0@mail.ru"
                 }
             ],
-            "description": "di plugin",
+            "description": "provider",
             "support": {
-                "issues": "https://github.com/Shveikin/markdi/issues",
-                "source": "https://github.com/Shveikin/markdi/tree/v3.2.1"
+                "issues": "https://github.com/Mark5Sync/provider/issues",
+                "source": "https://github.com/Mark5Sync/provider/tree/v1.0.0"
             },
-            "time": "2023-12-23T03:38:55+00:00"
+            "time": "2024-03-18T10:00:20+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v7.0.0",
+            "version": "v7.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "6e5688d69f7cfc4ed4a511e96007e06c2d34ce56"
+                "reference": "4d58f0f4fe95a30d7b538d71197135483560b97c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/6e5688d69f7cfc4ed4a511e96007e06c2d34ce56",
-                "reference": "6e5688d69f7cfc4ed4a511e96007e06c2d34ce56",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/4d58f0f4fe95a30d7b538d71197135483560b97c",
+                "reference": "4d58f0f4fe95a30d7b538d71197135483560b97c",
                 "shasum": ""
             },
             "require": {
@@ -243,7 +239,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.0.0"
+                "source": "https://github.com/symfony/finder/tree/v7.0.7"
             },
             "funding": [
                 {
@@ -259,7 +255,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-31T17:59:56+00:00"
+            "time": "2024-04-28T11:44:19+00:00"
         }
     ],
     "packages-dev": [],
@@ -270,5 +266,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

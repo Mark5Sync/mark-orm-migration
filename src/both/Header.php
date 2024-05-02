@@ -21,7 +21,7 @@ class Header
     /** 
      * @var Coll[]
      */
-    private $colls = [];
+    public $colls = [];
 
 
     function initFromCsv(CsvTable $table)

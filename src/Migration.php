@@ -8,6 +8,8 @@ use markorm_migration\_markers\controllers;
 use markorm_migration\_markers\migration_connect;
 use markorm_migration\_markers\migration_tools;
 
+use markorm_migration\_markers\scheme;
+use markorm_migration\scheme\SchemeConfig;
 
 abstract class
 Migration implements MigrationInterface
@@ -15,6 +17,7 @@ Migration implements MigrationInterface
     use migration_connect;
     use controllers;
     use migration_tools;
+    use scheme;
 
 
     public $referenceData = './referenceData';
@@ -181,5 +184,59 @@ Migration implements MigrationInterface
                 throw $th;
             }
         }
+    }
+
+
+
+
+
+    private function buildScheme() 
+    {
+        $scheme = new SchemeConfig("{$this->referenceData}/scheme.json");
+
+        $tables = [];
+        $csvTables = $this->tableController->referenceTables($this->referenceData);
+
+        $index = 0;
+
+        foreach ($csvTables as $tableName => $table) {
+            echo "\n$tableName";
+
+            
+
+            $colls = array_values(array_map(function($coll){
+                    return [
+                        "field" => $coll->field,
+                        "type" => $this->schemeTypes->convert($coll->type),
+                        "allowNull" => !!$coll->isNull,
+                        "primaryKey" => $coll->key == 'pri',
+                        "default" => $coll->default,
+                        "autoIncrement" => $coll->extra == 'auto_increment',
+                        "relation" => $coll->relationTable 
+                            ? [
+                                "table" => $coll->relationTable,
+                                "coll" => $coll->relationColl,
+                                "onDelete" => $coll->relationOnDelete,
+                                "onUpdate" => $coll->relationOnUpdate,
+                            ]
+                            : null, 
+                    ];
+                }, $table->header->colls));
+
+            $jsonTable = $scheme->getTable($tableName);
+
+            $tables[] = [
+                "name" => $tableName,
+                "position" => $jsonTable ? $jsonTable->position : [0, 100 * $index],
+                "colls" => $colls,
+                "test" => $jsonTable ? $jsonTable->test :[]
+            ];
+
+            $index++;
+        }
+
+        echo "\n-- DONE --\n\n";
+
+        file_put_contents("{$this->referenceData}/scheme.json", json_encode(['tables' => $tables]));
     }
 }
