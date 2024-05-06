@@ -187,7 +187,10 @@ Migration implements MigrationInterface
     }
 
 
-
+    private function clear(){
+        $this->tableController->removeAllTables();
+        echo "removed";
+    }
 
 
     private function buildScheme() 
@@ -221,7 +224,8 @@ Migration implements MigrationInterface
                             ]
                             : null, 
                     ];
-                }, $table->header->colls));
+                }, $table->header->colls)
+            );
 
             $jsonTable = $scheme->getTable($tableName);
 
@@ -229,7 +233,7 @@ Migration implements MigrationInterface
                 "name" => $tableName,
                 "position" => $jsonTable ? $jsonTable->position : [0, 100 * $index],
                 "colls" => $colls,
-                "test" => $jsonTable ? $jsonTable->test :[]
+                "test" => $table->body,
             ];
 
             $index++;
